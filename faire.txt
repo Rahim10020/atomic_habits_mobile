@@ -1,0 +1,4 @@
+- il dois y avoir certains utilisateurs qui n'ont jamais lu le livre 
+    'atomic habits' de James Clear et il serait cool de leur expliquer 
+    les differentes grandes methodes du livre que j'ai applique 
+    dans l'appplication.

@@ -566,7 +566,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                   },
                 ),
                 borderData: FlBorderData(show: false),
-                barGroups: List.generate(7, (index) {
+                barGroups: List.generate(weekDays.length, (index) {
                   // Simuler des données pour la démonstration
                   final completedCount =
                       (habits.length * (0.5 + (index % 3) * 0.2)).toInt();
