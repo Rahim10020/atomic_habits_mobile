@@ -4,8 +4,8 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'core/router/app_router.dart';
 import 'core/themes/app_theme.dart';
 import 'core/constants/colors.dart';
-import 'presentation/screens/settings/settings_screen.dart';
 import 'application/providers/data_manager_provider.dart';
+import 'application/providers/theme_mode_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +39,7 @@ class MyApp extends ConsumerWidget {
       locale: const Locale('fr', 'FR'),
 
       // Router with splash screen
-      routerConfig: AppRouter.router,
+      routerConfig: AppRouter.router(ref),
 
       // Show splash during data loading
       builder: (context, child) {

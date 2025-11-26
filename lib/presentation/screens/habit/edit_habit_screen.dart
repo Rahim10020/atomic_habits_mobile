@@ -6,6 +6,7 @@ import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
 import '../../../domain/models/habit.dart';
 import '../../../application/providers/habit_provider.dart';
+import '../../widgets/common/habit_laws_fields.dart';
 
 class EditHabitScreen extends ConsumerStatefulWidget {
   final int habitId;
@@ -268,56 +269,14 @@ class _EditHabitScreenState extends ConsumerState<EditHabitScreen> {
       children: [
         Text('Les 4 Lois du changement', style: AppTextStyles.headlineSmall),
         const SizedBox(height: AppConstants.paddingMedium),
-        _buildLawField(
-          controller: _cueController,
-          label: '1. Rendre évident',
-          hint: 'Comment allez-vous vous en souvenir ?',
-          icon: Icons.visibility,
-          color: AppColors.primary,
-        ),
-        const SizedBox(height: AppConstants.paddingMedium),
-        _buildLawField(
-          controller: _cravingController,
-          label: '2. Rendre attrayant',
-          hint: 'Comment la rendre plus agréable ?',
-          icon: Icons.favorite,
-          color: AppColors.accent,
-        ),
-        const SizedBox(height: AppConstants.paddingMedium),
-        _buildLawField(
-          controller: _responseController,
-          label: '3. Rendre facile',
-          hint: 'Comment la simplifier ?',
-          icon: Icons.speed,
-          color: AppColors.secondary,
-        ),
-        const SizedBox(height: AppConstants.paddingMedium),
-        _buildLawField(
-          controller: _rewardController,
-          label: '4. Rendre satisfaisant',
-          hint: 'Comment vous récompenser ?',
-          icon: Icons.star,
-          color: AppColors.success,
+        HabitLawsFields(
+          cueController: _cueController,
+          cravingController: _cravingController,
+          responseController: _responseController,
+          rewardController: _rewardController,
+          showExamples: false,
         ),
       ],
-    );
-  }
-
-  Widget _buildLawField({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-    required IconData icon,
-    required Color color,
-  }) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        prefixIcon: Icon(icon, color: color),
-        labelStyle: TextStyle(color: color),
-      ),
     );
   }
 

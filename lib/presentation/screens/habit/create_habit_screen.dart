@@ -7,6 +7,7 @@ import '../../../core/constants/text_styles.dart';
 import '../../../domain/models/habit.dart';
 import '../../../domain/models/four_laws.dart';
 import '../../../application/providers/habit_provider.dart';
+import '../../widgets/common/habit_laws_fields.dart';
 
 class CreateHabitScreen extends ConsumerStatefulWidget {
   const CreateHabitScreen({super.key});
@@ -250,51 +251,12 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
       subtitle: const Text('Rendez votre habitude efficace'),
       isActive: _currentStep >= 2,
       state: _currentStep > 2 ? StepState.complete : StepState.indexed,
-      content: Column(
-        children: [
-          _buildLawSection(
-            law: AppConstants.fourLaws[0],
-            description: AppConstants.fourLawsDescriptions[0],
-            controller: _cueController,
-            hint: 'Ex: Mettre mes chaussures près du lit',
-            icon: Icons.visibility_rounded,
-            color: AppColors.primary,
-            examples: FourLawsExamples.cueExamples.take(3).toList(),
-          ),
-          const SizedBox(height: AppConstants.paddingLarge),
-
-          _buildLawSection(
-            law: AppConstants.fourLaws[1],
-            description: AppConstants.fourLawsDescriptions[1],
-            controller: _cravingController,
-            hint: 'Ex: Écouter ma musique préférée',
-            icon: Icons.favorite_rounded,
-            color: AppColors.accent,
-            examples: FourLawsExamples.cravingExamples.take(3).toList(),
-          ),
-          const SizedBox(height: AppConstants.paddingLarge),
-
-          _buildLawSection(
-            law: AppConstants.fourLaws[2],
-            description: AppConstants.fourLawsDescriptions[2],
-            controller: _responseController,
-            hint: 'Ex: Commencer par 2 minutes',
-            icon: Icons.speed_rounded,
-            color: AppColors.secondary,
-            examples: FourLawsExamples.responseExamples.take(3).toList(),
-          ),
-          const SizedBox(height: AppConstants.paddingLarge),
-
-          _buildLawSection(
-            law: AppConstants.fourLaws[3],
-            description: AppConstants.fourLawsDescriptions[3],
-            controller: _rewardController,
-            hint: 'Ex: Marquer un X sur mon calendrier',
-            icon: Icons.star_rounded,
-            color: AppColors.success,
-            examples: FourLawsExamples.rewardExamples.take(3).toList(),
-          ),
-        ],
+      content: HabitLawsFields(
+        cueController: _cueController,
+        cravingController: _cravingController,
+        responseController: _responseController,
+        rewardController: _rewardController,
+        showExamples: true,
       ),
     );
   }
@@ -343,94 +305,6 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
           ],
         ],
       ),
-    );
-  }
-
-  Widget _buildLawSection({
-    required String law,
-    required String description,
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-    required Color color,
-    required List<String> examples,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: color, size: 20),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    law,
-                    style: AppTextStyles.titleMedium.copyWith(
-                      color: color,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    description,
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: AppColors.textSecondaryLight,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-
-        TextFormField(
-          controller: controller,
-          decoration: InputDecoration(
-            hintText: hint,
-            prefixIcon: Icon(icon, color: color),
-          ),
-        ),
-        const SizedBox(height: 8),
-
-        ExpansionTile(
-          title: Text(
-            'Voir des exemples',
-            style: AppTextStyles.bodySmall.copyWith(color: color),
-          ),
-          tilePadding: EdgeInsets.zero,
-          childrenPadding: const EdgeInsets.only(left: 16, bottom: 8),
-          children: examples.map((example) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(Icons.circle, size: 6, color: color),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      example,
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.textSecondaryLight,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
-        ),
-      ],
     );
   }
 

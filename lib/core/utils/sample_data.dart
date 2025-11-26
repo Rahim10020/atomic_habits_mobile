@@ -1,4 +1,5 @@
 import 'package:atomic_habits_mobile/domain/models/habit.dart';
+import '../constants/app_constants.dart';
 
 /// Données d'exemple pour tester l'application
 class SampleData {
@@ -187,17 +188,6 @@ class SampleData {
   }
 
   static String getRandomQuote() {
-    final quotes = [
-      'Vous n\'atteignez pas le niveau de vos objectifs. Vous tombez au niveau de vos systèmes.',
-      'Chaque action que vous prenez est un vote pour le type de personne que vous souhaitez devenir.',
-      'Les habitudes sont l\'intérêt composé de l\'amélioration de soi.',
-      'La plus grande menace au succès n\'est pas l\'échec mais l\'ennui.',
-      'Le but n\'est pas de lire un livre, le but est de devenir un lecteur.',
-      'Les progrès sont progressifs, les résultats sont dramatiques.',
-      'L\'amélioration de 1% n\'est pas particulièrement notable, mais elle peut être bien plus significative.',
-      'Un objectif sans système est juste un souhait.',
-    ];
-
-    return quotes[DateTime.now().day % quotes.length];
+    return AppConstants.quotes[DateTime.now().day % AppConstants.quotes.length];
   }
 }

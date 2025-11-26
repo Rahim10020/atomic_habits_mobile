@@ -29,8 +29,12 @@ class GetDashboardStatsUseCase {
   // Récupère les statistiques du jour
   Future<Result<DashboardStats>> execute() async {
     try {
-      final completedCount = await _repository.getTodayCompletedCount();
-      final pendingCount = await _repository.getTodayPendingCount();
+      final results = await Future.wait([
+        _repository.getTodayCompletedCount(),
+        _repository.getTodayPendingCount(),
+      ]);
+      final completedCount = results[0];
+      final pendingCount = results[1];
       final totalHabits = completedCount + pendingCount;
 
       final completionRate = totalHabits > 0

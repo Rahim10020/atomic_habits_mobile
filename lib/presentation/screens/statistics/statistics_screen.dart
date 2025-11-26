@@ -62,8 +62,10 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          ref.invalidate(habitsProvider);
-          ref.invalidate(dashboardStatsProvider);
+          await Future.wait([
+            ref.refresh(habitsProvider.future),
+            ref.refresh(dashboardStatsProvider.future),
+          ]);
         },
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppConstants.paddingMedium),

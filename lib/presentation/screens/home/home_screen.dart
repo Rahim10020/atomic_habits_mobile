@@ -49,8 +49,10 @@ class HomeScreen extends ConsumerWidget {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          ref.invalidate(habitsProvider);
-          ref.invalidate(dashboardStatsProvider);
+          await Future.wait([
+            ref.refresh(habitsProvider.future),
+            ref.refresh(dashboardStatsProvider.future),
+          ]);
         },
         child: CustomScrollView(
           slivers: [
