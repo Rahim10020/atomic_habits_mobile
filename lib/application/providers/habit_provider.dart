@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:collection/collection.dart';
 import '../../domain/models/habit.dart';
 import '../../domain/models/habit_log.dart';
 import '../../domain/repositories/habit_repository.dart';
@@ -34,12 +35,13 @@ final habitProvider = FutureProvider.family<Habit?, int>((ref, habitId) async {
 });
 
 // Habits by Category Provider
-final habitsByCategoryProvider = FutureProvider.family<List<Habit>, String>((
-  ref,
-  category,
-) async {
-  final repository = ref.watch(habitRepositoryProvider);
-  return repository.getHabitsByCategory(category);
+final habitsByCategoryProvider = Provider<Map<String, List<Habit>>>((ref) {
+  return ref
+      .watch(habitsProvider)
+      .maybeWhen(
+        data: (habits) => groupBy(habits, (habit) => habit.category),
+        orElse: () => const {},
+      );
 });
 
 // Habit Logs Provider

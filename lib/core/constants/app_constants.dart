@@ -7,7 +7,7 @@ class AppConstants {
 
   // Database
   static const String databaseName = 'atomic_habits.db';
-  static const int databaseVersion = 1;
+  static const int databaseVersion = 2;
 
   // Notification
   static const String notificationChannelId = 'habit_reminders';

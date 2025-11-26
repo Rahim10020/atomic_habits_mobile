@@ -16,7 +16,9 @@ void main() async {
 
   // Initialize notification service
   try {
-    await NotificationService().initialize();
+    final notificationService = NotificationService();
+    await notificationService.initialize();
+    await notificationService.requestPermissions();
   } catch (e) {
     debugPrint('Erreur lors de l\'initialisation des notifications: $e');
     // Continue without notifications if initialization fails

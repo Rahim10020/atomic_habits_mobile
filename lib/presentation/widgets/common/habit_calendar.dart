@@ -5,13 +5,11 @@ import '../../../core/constants/text_styles.dart';
 import '../../../core/utils/date_utils.dart' as app_date_utils;
 
 class HabitCalendar extends StatelessWidget {
-  final int habitId;
   final Map<DateTime, bool> completionHistory;
   final Color color;
 
   const HabitCalendar({
     super.key,
-    required this.habitId,
     required this.completionHistory,
     required this.color,
   });

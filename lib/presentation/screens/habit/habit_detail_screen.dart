@@ -137,7 +137,6 @@ class HabitDetailScreen extends ConsumerWidget {
                       const SizedBox(height: AppConstants.paddingMedium),
 
                       HabitCalendar(
-                        habitId: habitId,
                         completionHistory: stats.completionHistory,
                         color: categoryColor,
                       ),
