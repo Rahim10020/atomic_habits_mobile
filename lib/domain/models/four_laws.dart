@@ -5,12 +5,22 @@ class FourLaws {
   static const String makeItAttractive = 'Rendre attrayant';
   static const String makeItEasy = 'Rendre facile';
   static const String makeItSatisfying = 'Rendre satisfaisant';
-  
+
   // Inversions for breaking bad habits
   static const String makeItInvisible = 'Rendre invisible';
   static const String makeItUnattractive = 'Rendre peu attrayant';
   static const String makeItDifficult = 'Rendre difficile';
   static const String makeItUnsatisfying = 'Rendre insatisfaisant';
+
+  // Descriptions
+  static const String makeItObviousDescription =
+      'Créez des signaux visuels clairs pour déclencher votre habitude';
+  static const String makeItAttractiveDescription =
+      'Associez votre habitude à quelque chose que vous aimez';
+  static const String makeItEasyDescription =
+      'Réduisez la friction et rendez l\'habitude aussi simple que possible';
+  static const String makeItSatisfyingDescription =
+      'Célébrez vos victoires et rendez l\'habitude gratifiante';
 }
 
 class FourLawsExamples {
@@ -22,7 +32,7 @@ class FourLawsExamples {
     'Afficher mon objectif sur mon écran de verrouillage',
     'Préparer mes affaires de sport la veille',
   ];
-  
+
   // Law 2: Make it Attractive
   static const List<String> cravingExamples = [
     'Écouter ma musique préférée pendant l\'exercice',
@@ -31,7 +41,7 @@ class FourLawsExamples {
     'Rejoindre un groupe qui partage cette habitude',
     'Visualiser les bénéfices de cette habitude',
   ];
-  
+
   // Law 3: Make it Easy
   static const List<String> responseExamples = [
     'Commencer par 2 minutes seulement',
@@ -40,7 +50,7 @@ class FourLawsExamples {
     'Utiliser la règle des 2 minutes',
     'Automatiser autant que possible',
   ];
-  
+
   // Law 4: Make it Satisfying
   static const List<String> rewardExamples = [
     'Marquer un X sur mon calendrier',
@@ -54,14 +64,11 @@ class FourLawsExamples {
 class HabitStackingTemplate {
   final String currentHabit;
   final String newHabit;
-  
-  HabitStackingTemplate({
-    required this.currentHabit,
-    required this.newHabit,
-  });
-  
+
+  HabitStackingTemplate({required this.currentHabit, required this.newHabit});
+
   String get template => 'Après $currentHabit, je vais $newHabit';
-  
+
   static List<String> examples = [
     'Après avoir bu mon café du matin, je méditerai pendant 2 minutes',
     'Après m\'être brossé les dents, je ferai 10 pompes',
@@ -75,13 +82,13 @@ class IdentityBasedHabit {
   final String identity; // "Je suis quelqu'un qui..."
   final String habitAction; // L'action concrète
   final String category;
-  
+
   IdentityBasedHabit({
     required this.identity,
     required this.habitAction,
     required this.category,
   });
-  
+
   static Map<String, List<String>> identityExamples = {
     'Santé': [
       'Je suis quelqu\'un qui prend soin de sa santé',
@@ -129,12 +136,9 @@ class IdentityBasedHabit {
 class TwoMinuteRule {
   final String fullHabit;
   final String twoMinuteVersion;
-  
-  TwoMinuteRule({
-    required this.fullHabit,
-    required this.twoMinuteVersion,
-  });
-  
+
+  TwoMinuteRule({required this.fullHabit, required this.twoMinuteVersion});
+
   static List<TwoMinuteRule> examples = [
     TwoMinuteRule(
       fullHabit: 'Faire du sport 30 minutes',
@@ -170,25 +174,25 @@ class AtomicHabitsPrinciples {
     'Un objectif sans système est juste un souhait',
     'Ne vous concentrez pas sur ce que vous voulez accomplir, concentrez-vous sur qui vous voulez devenir',
   ];
-  
+
   static const Map<String, String> conceptExplanations = {
-    'Amélioration de 1%': 
+    'Amélioration de 1%':
         'Si vous améliorez quelque chose de 1% chaque jour pendant un an, vous finirez 37 fois mieux. '
         'Les petites améliorations s\'accumulent de manière exponentielle.',
-    
-    'Habitudes basées sur l\'identité': 
+
+    'Habitudes basées sur l\'identité':
         'Au lieu de vous concentrer sur ce que vous voulez accomplir (résultat), concentrez-vous sur qui vous voulez devenir (identité). '
         'Chaque habitude renforce votre identité.',
-    
-    'Les systèmes battent les objectifs': 
+
+    'Les systèmes battent les objectifs':
         'Les objectifs sont bons pour donner une direction, mais les systèmes sont meilleurs pour faire des progrès. '
         'Un système est un processus que vous suivez indépendamment du résultat.',
-    
-    'Règle des 2 minutes': 
+
+    'Règle des 2 minutes':
         'Quand vous commencez une nouvelle habitude, elle ne devrait pas prendre plus de deux minutes. '
         'Le but est de rendre l\'habitude aussi facile que possible à commencer.',
-    
-    'Empilement d\'habitudes': 
+
+    'Empilement d\'habitudes':
         'Après [HABITUDE ACTUELLE], je vais [NOUVELLE HABITUDE]. '
         'Utilisez vos habitudes actuelles comme déclencheurs pour de nouvelles habitudes.',
   };

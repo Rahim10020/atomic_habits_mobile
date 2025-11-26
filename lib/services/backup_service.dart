@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -34,6 +35,9 @@ class BackupService {
 
   /// Exporte et sauvegarde dans un fichier
   Future<File> exportToFile() async {
+    if (kIsWeb) {
+      throw UnsupportedError('File operations not supported on web');
+    }
     try {
       final data = await exportToJson();
       final jsonString = JsonEncoder.withIndent('  ').convert(data);
@@ -56,6 +60,9 @@ class BackupService {
 
   /// Partage le backup
   Future<void> shareBackup() async {
+    if (kIsWeb) {
+      throw UnsupportedError('Sharing not supported on web');
+    }
     try {
       final file = await exportToFile();
       await Share.shareXFiles(
@@ -109,6 +116,9 @@ class BackupService {
 
   /// Importe depuis un fichier
   Future<int> importFromFile(File file) async {
+    if (kIsWeb) {
+      throw UnsupportedError('File operations not supported on web');
+    }
     try {
       final jsonString = await file.readAsString();
       final data = jsonDecode(jsonString) as Map<String, dynamic>;

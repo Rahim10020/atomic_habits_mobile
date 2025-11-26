@@ -68,6 +68,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
           ]);
         },
         child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.all(AppConstants.paddingMedium),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

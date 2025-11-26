@@ -25,8 +25,8 @@ class HabitLawsFields extends StatelessWidget {
     return Column(
       children: [
         _buildLawSection(
-          law: AppConstants.fourLaws[0],
-          description: AppConstants.fourLawsDescriptions[0],
+          law: FourLaws.makeItObvious,
+          description: FourLaws.makeItObviousDescription,
           controller: cueController,
           hint: 'Ex: Mettre mes chaussures près du lit',
           icon: Icons.visibility_rounded,
@@ -38,8 +38,8 @@ class HabitLawsFields extends StatelessWidget {
         const SizedBox(height: AppConstants.paddingLarge),
 
         _buildLawSection(
-          law: AppConstants.fourLaws[1],
-          description: AppConstants.fourLawsDescriptions[1],
+          law: FourLaws.makeItAttractive,
+          description: FourLaws.makeItAttractiveDescription,
           controller: cravingController,
           hint: 'Ex: Écouter ma musique préférée',
           icon: Icons.favorite_rounded,
@@ -51,8 +51,8 @@ class HabitLawsFields extends StatelessWidget {
         const SizedBox(height: AppConstants.paddingLarge),
 
         _buildLawSection(
-          law: AppConstants.fourLaws[2],
-          description: AppConstants.fourLawsDescriptions[2],
+          law: FourLaws.makeItEasy,
+          description: FourLaws.makeItEasyDescription,
           controller: responseController,
           hint: 'Ex: Commencer par 2 minutes',
           icon: Icons.speed_rounded,
@@ -64,8 +64,8 @@ class HabitLawsFields extends StatelessWidget {
         const SizedBox(height: AppConstants.paddingLarge),
 
         _buildLawSection(
-          law: AppConstants.fourLaws[3],
-          description: AppConstants.fourLawsDescriptions[3],
+          law: FourLaws.makeItSatisfying,
+          description: FourLaws.makeItSatisfyingDescription,
           controller: rewardController,
           hint: 'Ex: Marquer un X sur mon calendrier',
           icon: Icons.star_rounded,

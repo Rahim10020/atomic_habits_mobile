@@ -15,28 +15,6 @@ class AppConstants {
   static const String notificationChannelDescription =
       'Notifications pour vos habitudes quotidiennes';
 
-  // Four Laws of Behavior Change (from Atomic Habits)
-  static const List<String> fourLaws = [
-    'Rendre évident',
-    'Rendre attrayant',
-    'Rendre facile',
-    'Rendre satisfaisant',
-  ];
-
-  static const List<String> fourLawsDescriptions = [
-    'Créez des signaux visuels clairs pour déclencher votre habitude',
-    'Associez votre habitude à quelque chose que vous aimez',
-    'Réduisez la friction et rendez l\'habitude aussi simple que possible',
-    'Célébrez vos victoires et rendez l\'habitude gratifiante',
-  ];
-
-  static const List<String> fourLawsInversions = [
-    'Rendre invisible',
-    'Rendre peu attrayant',
-    'Rendre difficile',
-    'Rendre insatisfaisant',
-  ];
-
   // Categories
   static const List<String> defaultCategories = [
     'Santé',
