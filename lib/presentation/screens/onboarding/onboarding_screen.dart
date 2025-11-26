@@ -98,7 +98,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           // Marquer l'onboarding comme terminé
                           final prefs = await SharedPreferences.getInstance();
                           await prefs.setBool('first_launch', false);
-
+                          if (!context.mounted) return;
                           // Invalider le provider pour mettre à jour l'état
                           ref.invalidate(firstLaunchProvider);
 
