@@ -19,6 +19,23 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
   String _selectedPeriod = '7 jours';
   final List<String> _periods = ['7 jours', '30 jours', '90 jours', '1 an'];
 
+  // Méthode pour calculer la date de début selon la période
+  DateTime _getStartDate() {
+    final now = DateTime.now();
+    switch (_selectedPeriod) {
+      case '7 jours':
+        return now.subtract(const Duration(days: 7));
+      case '30 jours':
+        return now.subtract(const Duration(days: 30));
+      case '90 jours':
+        return now.subtract(const Duration(days: 90));
+      case '1 an':
+        return now.subtract(const Duration(days: 365));
+      default:
+        return now.subtract(const Duration(days: 7));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final habitsAsync = ref.watch(habitsProvider);
@@ -481,8 +498,12 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
 
   Widget _buildWeeklyProgress(List<Habit> habits) {
     final now = DateTime.now();
-    final weekDays = List.generate(7, (index) {
-      return now.subtract(Duration(days: 6 - index));
+    final startDate = _getStartDate();
+    final daysDifference = now.difference(startDate).inDays;
+
+    // Utilisez _selectedPeriod pour adapter le nombre de jours affichés
+    final weekDays = List.generate(daysDifference.clamp(1, 30), (index) {
+      return now.subtract(Duration(days: daysDifference - 1 - index));
     });
 
     return Container(
@@ -495,7 +516,10 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Progrès de la semaine', style: AppTextStyles.headlineSmall),
+          Text(
+            'Progrès - $_selectedPeriod',
+            style: AppTextStyles.headlineSmall,
+          ),
           const SizedBox(height: AppConstants.paddingLarge),
           SizedBox(
             height: 200,
