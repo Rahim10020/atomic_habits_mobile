@@ -5,7 +5,6 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
 import '../../../application/providers/habit_provider.dart';
-import '../../../core/utils/date_utils.dart' as app_date_utils;
 import '../../../domain/models/habit.dart';
 
 class StatisticsScreen extends ConsumerStatefulWidget {
@@ -18,23 +17,6 @@ class StatisticsScreen extends ConsumerStatefulWidget {
 class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
   String _selectedPeriod = '7 jours';
   final List<String> _periods = ['7 jours', '30 jours', '90 jours', '1 an'];
-
-  // Méthode pour calculer la date de début selon la période
-  DateTime _getStartDate() {
-    final now = DateTime.now();
-    switch (_selectedPeriod) {
-      case '7 jours':
-        return now.subtract(const Duration(days: 7));
-      case '30 jours':
-        return now.subtract(const Duration(days: 30));
-      case '90 jours':
-        return now.subtract(const Duration(days: 90));
-      case '1 an':
-        return now.subtract(const Duration(days: 365));
-      default:
-        return now.subtract(const Duration(days: 7));
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +75,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                       const SizedBox(height: AppConstants.paddingLarge),
                       _buildStreakLeaderboard(habits),
                       const SizedBox(height: AppConstants.paddingLarge),
-                      _buildWeeklyProgress(habits),
+                      _buildWeeklyProgress(habits, <DateTime, int>{}),
                     ],
                   );
                 },
@@ -278,12 +260,14 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
               0,
               (sum, habit) => sum + habit.totalCompletions,
             );
-            final avgStreak =
-                entry.value.fold<int>(
-                  0,
-                  (sum, habit) => sum + habit.currentStreak,
-                ) /
-                entry.value.length;
+            final avgStreak = entry.value.isEmpty
+                ? 0
+                : (entry.value.fold<int>(
+                            0,
+                            (sum, habit) => sum + habit.currentStreak,
+                          ) /
+                          entry.value.length)
+                      .round();
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
@@ -496,16 +480,11 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
     );
   }
 
-  Widget _buildWeeklyProgress(List<Habit> habits) {
-    final now = DateTime.now();
-    final startDate = _getStartDate();
-    final daysDifference = now.difference(startDate).inDays;
-
-    // Utilisez _selectedPeriod pour adapter le nombre de jours affichés
-    final weekDays = List.generate(daysDifference.clamp(1, 30), (index) {
-      return now.subtract(Duration(days: daysDifference - 1 - index));
-    });
-
+  Widget _buildWeeklyProgress(
+    List<Habit> habits,
+    Map<DateTime, int> completions,
+  ) {
+    final days = completions.keys.toList()..sort();
     return Container(
       padding: const EdgeInsets.all(AppConstants.paddingLarge),
       decoration: BoxDecoration(
@@ -525,51 +504,10 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
             height: 200,
             child: BarChart(
               BarChartData(
-                alignment: BarChartAlignment.spaceAround,
-                maxY: habits.length.toDouble() * 1.2,
-                barTouchData: BarTouchData(enabled: false),
-                titlesData: FlTitlesData(
-                  show: true,
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      getTitlesWidget: (value, meta) {
-                        final day = weekDays[value.toInt()];
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: Text(
-                            app_date_utils.DateUtils.formatDateShort(
-                              day,
-                            ).split('/')[0],
-                            style: AppTextStyles.bodySmall,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  leftTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                ),
-                gridData: FlGridData(
-                  show: true,
-                  drawVerticalLine: false,
-                  horizontalInterval: 1,
-                  getDrawingHorizontalLine: (value) {
-                    return FlLine(color: AppColors.borderLight, strokeWidth: 1);
-                  },
-                ),
-                borderData: FlBorderData(show: false),
-                barGroups: List.generate(weekDays.length, (index) {
-                  // Simuler des données pour la démonstration
-                  final completedCount =
-                      (habits.length * (0.5 + (index % 3) * 0.2)).toInt();
+                maxY: habits.length.toDouble(),
+                barGroups: List.generate(days.length, (index) {
+                  final day = days[index];
+                  final completedCount = completions[day] ?? 0;
                   return BarChartGroupData(
                     x: index,
                     barRods: [
@@ -577,9 +515,6 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                         toY: completedCount.toDouble(),
                         color: AppColors.primary,
                         width: 16,
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(4),
-                        ),
                       ),
                     ],
                   );

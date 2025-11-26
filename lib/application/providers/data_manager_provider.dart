@@ -1,11 +1,8 @@
 import 'package:atomic_habits_mobile/domain/repositories/habit_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/utils/sample_data.dart';
 import 'habit_provider.dart';
-
-final _logger = Logger('DataManagerProvider');
 
 // Provider pour vérifier si c'est le premier lancement
 final firstLaunchProvider = FutureProvider<bool>((ref) async {
@@ -23,13 +20,16 @@ final sampleDataLoaderProvider = FutureProvider<void>((ref) async {
   final sampleHabits = SampleData.getSampleHabits();
 
   // Charger les habitudes d'exemple
+  final existingNames = (await repository.getAllHabits())
+      .map((habit) => habit.name.trim().toLowerCase())
+      .toSet();
+
   for (var habit in sampleHabits) {
-    try {
-      await repository.createHabit(habit);
-    } catch (e) {
-      // Ignorer les erreurs de duplication
-      _logger.severe('Erreur lors du chargement des données: $e');
-    }
+    final normalizedName = habit.name.trim().toLowerCase();
+    if (existingNames.contains(normalizedName)) continue;
+
+    await repository.createHabit(habit);
+    existingNames.add(normalizedName);
   }
 
   // Marquer que l'app a été lancée
