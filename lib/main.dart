@@ -6,12 +6,21 @@ import 'core/themes/app_theme.dart';
 import 'core/constants/colors.dart';
 import 'application/providers/data_manager_provider.dart';
 import 'application/providers/theme_mode_provider.dart';
+import 'services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize date formatting for French
   await initializeDateFormatting('fr_FR', null);
+
+  // Initialize notification service
+  try {
+    await NotificationService().initialize();
+  } catch (e) {
+    debugPrint('Erreur lors de l\'initialisation des notifications: $e');
+    // Continue without notifications if initialization fails
+  }
 
   runApp(const ProviderScope(child: MyApp()));
 }

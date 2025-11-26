@@ -87,29 +87,4 @@ class AppConstants {
     180: '🎯 Six mois de persévérance !',
     365: '👑 UN AN !',
   };
-
-  // Templates d'habitudes (nouveaux)
-  static const List<Map<String, String>> habitTemplates = [
-    {
-      'name': 'Boire 2L d\'eau',
-      'category': 'Santé',
-      'description': 'Rester bien hydraté',
-      'cue': 'Placer une bouteille sur mon bureau',
-      'craving': 'Utiliser ma belle bouteille',
-      'response': 'Boire un verre toutes les heures',
-      'reward': 'Cocher chaque verre',
-      'twoMinute': 'Remplir ma bouteille',
-    },
-    {
-      'name': 'Méditation matinale',
-      'category': 'Mindfulness',
-      'description': '10 minutes de pleine conscience',
-      'cue': 'Alarme à 7h',
-      'craving': 'Allumer une bougie',
-      'response': 'Commencer par 2 minutes',
-      'reward': 'Noter dans mon journal',
-      'twoMinute': 'Trois respirations profondes',
-    },
-    // ... ajouter 5-10 templates
-  ];
 }

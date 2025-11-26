@@ -7,6 +7,8 @@ import '../../../core/constants/text_styles.dart';
 import '../../../domain/models/habit.dart';
 import '../../../domain/models/four_laws.dart';
 import '../../../application/providers/habit_provider.dart';
+import '../../../application/providers/habit_templates_provider.dart';
+import '../../../core/utils/habit_templates.dart';
 import '../../widgets/common/habit_laws_fields.dart';
 
 class CreateHabitScreen extends ConsumerStatefulWidget {
@@ -31,6 +33,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
   bool _reminderEnabled = false;
   TimeOfDay? _reminderTime;
   int _currentStep = 0;
+  HabitTemplate? _selectedTemplate;
 
   @override
   void dispose() {
@@ -44,8 +47,32 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
     super.dispose();
   }
 
+  void _preFillFromTemplate() {
+    if (_selectedTemplate == null) return;
+
+    _nameController.text = _selectedTemplate!.name;
+    _descriptionController.text = _selectedTemplate!.description;
+    _selectedCategory = _selectedTemplate!.category;
+    _twoMinuteController.text = _selectedTemplate!.twoMinuteVersion;
+    _cueController.text = _selectedTemplate!.cue;
+    _cravingController.text = _selectedTemplate!.craving;
+    _responseController.text = _selectedTemplate!.response;
+    _rewardController.text = _selectedTemplate!.reward;
+
+    if (_selectedTemplate!.reminderTime != null) {
+      _reminderEnabled = true;
+      final parts = _selectedTemplate!.reminderTime!.split(':');
+      _reminderTime = TimeOfDay(
+        hour: int.parse(parts[0]),
+        minute: int.parse(parts[1]),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final templatesAsync = ref.watch(allHabitTemplatesProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Nouvelle habitude'),
@@ -69,10 +96,127 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
           onStepCancel: _onStepCancel,
           controlsBuilder: _controlsBuilder,
           steps: [
+            _buildTemplateSelectionStep(templatesAsync),
             _buildBasicInfoStep(),
             _buildIdentityStep(),
             _buildFourLawsStep(),
             _buildReminderStep(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Step _buildTemplateSelectionStep(List<HabitTemplate> templates) {
+    return Step(
+      title: const Text('Choisir un modèle'),
+      subtitle: const Text('Commencez avec un modèle ou créez votre habitude'),
+      isActive: _currentStep >= 0,
+      state: _currentStep > 0 ? StepState.complete : StepState.indexed,
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Modèles populaires', style: AppTextStyles.headlineSmall),
+          const SizedBox(height: AppConstants.paddingMedium),
+          _buildTemplatesGrid(templates),
+          const SizedBox(height: AppConstants.paddingLarge),
+          OutlinedButton.icon(
+            onPressed: () {
+              setState(() {
+                _selectedTemplate = null;
+              });
+              _onStepContinue();
+            },
+            icon: const Icon(Icons.create),
+            label: const Text('Créer une habitude personnalisée'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTemplatesGrid(List<HabitTemplate> templates) {
+    // Group by category and take first 2 from each
+    final templatesByCategory = <String, List<HabitTemplate>>{};
+    for (var template in templates) {
+      if (!templatesByCategory.containsKey(template.category)) {
+        templatesByCategory[template.category] = [];
+      }
+      if (templatesByCategory[template.category]!.length < 2) {
+        templatesByCategory[template.category]!.add(template);
+      }
+    }
+
+    return Column(
+      children: templatesByCategory.entries.map((entry) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              entry.key,
+              style: AppTextStyles.titleMedium.copyWith(
+                color: AppColors.categoryColors[entry.key] ?? AppColors.primary,
+              ),
+            ),
+            const SizedBox(height: AppConstants.paddingSmall),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: entry.value
+                  .map((template) => _buildTemplateCard(template))
+                  .toList(),
+            ),
+            const SizedBox(height: AppConstants.paddingMedium),
+          ],
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildTemplateCard(HabitTemplate template) {
+    final isSelected = _selectedTemplate == template;
+    final color =
+        AppColors.categoryColors[template.category] ?? AppColors.primary;
+
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _selectedTemplate = template;
+        });
+        _preFillFromTemplate();
+        _onStepContinue();
+      },
+      child: Container(
+        width: 160,
+        padding: const EdgeInsets.all(AppConstants.paddingMedium),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? color.withValues(alpha: 0.1)
+              : AppColors.surfaceLight,
+          border: Border.all(
+            color: isSelected ? color : AppColors.borderLight,
+            width: isSelected ? 2 : 1,
+          ),
+          borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              template.name,
+              style: AppTextStyles.titleSmall,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              template.description,
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.textSecondaryLight,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
           ],
         ),
       ),
@@ -375,12 +519,17 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
 
   void _onStepContinue() {
     if (_currentStep == 0) {
+      // Template selection - always continue
+      setState(() {
+        _currentStep++;
+      });
+    } else if (_currentStep == 1) {
       if (_formKey.currentState!.validate()) {
         setState(() {
           _currentStep++;
         });
       }
-    } else if (_currentStep < 3) {
+    } else if (_currentStep < 4) {
       setState(() {
         _currentStep++;
       });
@@ -401,6 +550,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     final identityStatement =
+        _selectedTemplate?.identityStatement ??
         IdentityBasedHabit.identityExamples[_selectedCategory]?.first;
     final categoryColor = AppColors.categoryColors[_selectedCategory];
 
@@ -409,25 +559,29 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
       name: _nameController.text,
       description: _descriptionController.text.isNotEmpty
           ? _descriptionController.text
-          : null,
+          : _selectedTemplate?.description,
       category: _selectedCategory,
       frequency: _selectedFrequency,
       identityStatement: identityStatement,
       twoMinuteVersion: _twoMinuteController.text.isNotEmpty
           ? _twoMinuteController.text
-          : null,
-      cue: _cueController.text.isNotEmpty ? _cueController.text : null,
+          : _selectedTemplate?.twoMinuteVersion,
+      cue: _cueController.text.isNotEmpty
+          ? _cueController.text
+          : _selectedTemplate?.cue,
       craving: _cravingController.text.isNotEmpty
           ? _cravingController.text
-          : null,
+          : _selectedTemplate?.craving,
       response: _responseController.text.isNotEmpty
           ? _responseController.text
-          : null,
-      reward: _rewardController.text.isNotEmpty ? _rewardController.text : null,
+          : _selectedTemplate?.response,
+      reward: _rewardController.text.isNotEmpty
+          ? _rewardController.text
+          : _selectedTemplate?.reward,
       reminderEnabled: _reminderEnabled,
       reminderTime: _reminderTime != null
           ? '${_reminderTime!.hour.toString().padLeft(2, '0')}:${_reminderTime!.minute.toString().padLeft(2, '0')}'
-          : null,
+          : _selectedTemplate?.reminderTime,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       color: categoryColor?.toARGB32(),

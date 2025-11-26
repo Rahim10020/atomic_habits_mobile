@@ -65,6 +65,9 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
           await Future.wait([
             ref.refresh(habitsProvider.future),
             ref.refresh(dashboardStatsProvider.future),
+            ref.refresh(
+              completionTrendProvider(_periodToDays(_selectedPeriod)).future,
+            ),
           ]);
         },
         child: SingleChildScrollView(

@@ -32,10 +32,6 @@ final sampleDataLoaderProvider = FutureProvider<void>((ref) async {
     existingNames.add(normalizedName);
   }
 
-  // Marquer que l'app a été lancée
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setBool('first_launch', false);
-
   // Rafraîchir les habitudes
   ref.invalidate(habitsProvider);
 });
