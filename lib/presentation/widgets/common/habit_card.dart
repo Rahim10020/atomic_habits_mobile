@@ -1,7 +1,9 @@
 import 'package:atomic_habits_mobile/presentation/widgets/animations/check_animation.dart';
+import 'package:atomic_habits_mobile/services/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:vibration/vibration.dart' show Vibration;
 import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
@@ -189,6 +191,16 @@ class _HabitCardState extends ConsumerState<HabitCard> {
   Future<void> _toggleCompletion(bool isCompleted) async {
     if (_isAnimating) return;
 
+    // Ajout d'un feedback haptique
+    final hasVibrator = await Vibration.hasVibrator() ?? false;
+    if (hasVibrator) {
+      if (!isCompleted) {
+        Vibration.vibrate(duration: 50); // Complétion
+      } else {
+        Vibration.vibrate(duration: 30); // Annulation
+      }
+    }
+
     setState(() {
       _isAnimating = true;
     });
@@ -200,9 +212,16 @@ class _HabitCardState extends ConsumerState<HabitCard> {
         await controller.uncompleteHabit(widget.habit.id, DateTime.now());
       } else {
         await controller.completeHabit(widget.habit.id);
+
+        // Verification de milestone
+        final updatedHabit = await ref.read(
+          habitProvider(widget.habit.id).future,
+        );
+        if (updatedHabit != null) {
+          _checkMilestone(updatedHabit);
+        }
       }
 
-      // Refresh the data
       ref.invalidate(todayCompletionProvider(widget.habit.id));
       ref.invalidate(dashboardStatsProvider);
       ref.invalidate(habitsProvider);
@@ -213,6 +232,31 @@ class _HabitCardState extends ConsumerState<HabitCard> {
         setState(() {
           _isAnimating = false;
         });
+      }
+    }
+  }
+
+  // Méthode pour les milestones
+  void _checkMilestone(Habit habit) {
+    if (AppConstants.milestones.contains(habit.currentStreak)) {
+      final message = AppConstants.milestoneMessages[habit.currentStreak];
+      if (message != null && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: AppColors.success,
+            duration: const Duration(seconds: 3),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+
+        // Notification de milestone
+        NotificationService().showMilestoneNotification(
+          habitId: habit.id,
+          habitName: habit.name,
+          streak: habit.currentStreak,
+          message: message,
+        );
       }
     }
   }

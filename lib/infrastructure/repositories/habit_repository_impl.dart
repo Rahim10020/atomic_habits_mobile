@@ -4,11 +4,13 @@ import '../../domain/models/habit_log.dart' as model;
 import '../../domain/repositories/habit_repository.dart';
 import '../database/app_database.dart';
 
+/// Implémentation optimisée du repository des habitudes
 class HabitRepositoryImpl implements HabitRepository {
   final AppDatabase _database;
 
   HabitRepositoryImpl(this._database);
 
+  /// Mappe un log Drift vers le modèle domain
   model.HabitLog _mapLogToModel(HabitLog driftLog) {
     return model.HabitLog(
       id: driftLog.id,
@@ -21,7 +23,7 @@ class HabitRepositoryImpl implements HabitRepository {
     );
   }
 
-  // Méthode helper pour mapper Drift Habit vers domain Habit
+  /// Mappe un habit Drift vers le modèle domain
   model.Habit _mapToModel(Habit driftHabit) {
     return model.Habit(
       id: driftHabit.id,
@@ -268,38 +270,57 @@ class HabitRepositoryImpl implements HabitRepository {
 
   @override
   Future<int> getTodayCompletedCount() async {
-    final habits = await getActiveHabits();
-    int count = 0;
-
+    // OPTIMISÉ: Une seule requête SQL avec JOIN au lieu de N+1 requêtes
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = today.add(const Duration(days: 1));
 
-    for (var habit in habits) {
-      final log = await getLogForHabitOnDate(habit.id, today);
-      if (log != null) {
-        count++;
-      }
-    }
+    final result = await _database
+        .customSelect(
+          '''
+          SELECT COUNT(DISTINCT h.id) as count
+          FROM habits h
+          INNER JOIN habit_logs hl ON h.id = hl.habit_id
+          WHERE h.is_active = 1
+          AND hl.completed_at >= ?
+          AND hl.completed_at < ?
+          ''',
+          variables: [
+            Variable.withDateTime(today),
+            Variable.withDateTime(tomorrow),
+          ],
+        )
+        .getSingle();
 
-    return count;
+    return result.read<int>('count');
   }
 
   @override
   Future<int> getTodayPendingCount() async {
-    final habits = await getActiveHabits();
-    int count = 0;
-
+    // OPTIMISÉ: Une seule requête SQL avec LEFT JOIN
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = today.add(const Duration(days: 1));
 
-    for (var habit in habits) {
-      final log = await getLogForHabitOnDate(habit.id, today);
-      if (log == null) {
-        count++;
-      }
-    }
+    final result = await _database
+        .customSelect(
+          '''
+          SELECT COUNT(h.id) as count
+          FROM habits h
+          LEFT JOIN habit_logs hl ON h.id = hl.habit_id 
+            AND hl.completed_at >= ? 
+            AND hl.completed_at < ?
+          WHERE h.is_active = 1
+          AND hl.id IS NULL
+          ''',
+          variables: [
+            Variable.withDateTime(today),
+            Variable.withDateTime(tomorrow),
+          ],
+        )
+        .getSingle();
 
-    return count;
+    return result.read<int>('count');
   }
 
   @override

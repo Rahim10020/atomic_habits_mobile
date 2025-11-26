@@ -20,9 +20,39 @@ class AppDatabase extends _$AppDatabase {
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (Migrator m) async {
       await m.createAll();
+
+      // Ajout des index après la création des tables
+      await customStatement(
+        'CREATE INDEX IF NOT EXISTS idx_habit_logs_habit_date '
+        'ON habit_logs(habit_id, completed_at)',
+      );
+
+      await customStatement(
+        'CREATE INDEX IF NOT EXISTS idx_habits_active_category '
+        'ON habits(is_active, category)',
+      );
+
+      await customStatement(
+        'CREATE INDEX IF NOT EXISTS idx_habit_logs_completed_at '
+        'ON habit_logs(completed_at)',
+      );
     },
     onUpgrade: (Migrator m, int from, int to) async {
-      // Handle database upgrades here
+      // Ajout des index si migration
+      if (from < 2) {
+        await customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_habit_logs_habit_date '
+          'ON habit_logs(habit_id, completed_at)',
+        );
+        await customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_habits_active_category '
+          'ON habits(is_active, category)',
+        );
+        await customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_habit_logs_completed_at '
+          'ON habit_logs(completed_at)',
+        );
+      }
     },
   );
 
