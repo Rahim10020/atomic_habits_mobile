@@ -327,4 +327,31 @@ class HabitRepositoryImpl implements HabitRepository {
   Future<List<model.Habit>> getTodayHabits() async {
     return await getActiveHabits();
   }
+
+  @override
+  Future<Map<DateTime, int>> getCompletionCountByDay({
+    required DateTime start,
+    required DateTime end,
+  }) async {
+    final rows =
+        await (_database.select(_database.habitLogs)..where(
+              (tbl) =>
+                  tbl.completedAt.isBiggerOrEqualValue(start) &
+                  tbl.completedAt.isSmallerOrEqualValue(end),
+            ))
+            .get();
+
+    final counts = <DateTime, int>{};
+    for (final log in rows) {
+      final completedAt = log.completedAt;
+      final day = DateTime(
+        completedAt.year,
+        completedAt.month,
+        completedAt.day,
+      );
+      counts[day] = (counts[day] ?? 0) + 1;
+    }
+
+    return counts;
+  }
 }

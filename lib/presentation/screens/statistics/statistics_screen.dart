@@ -18,10 +18,28 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
   String _selectedPeriod = '7 jours';
   final List<String> _periods = ['7 jours', '30 jours', '90 jours', '1 an'];
 
+  int _periodToDays(String period) {
+    switch (period) {
+      case '7 jours':
+        return 7;
+      case '30 jours':
+        return 30;
+      case '90 jours':
+        return 90;
+      case '1 an':
+        return 365;
+      default:
+        return 7;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final habitsAsync = ref.watch(habitsProvider);
-    final dashboardStatsAsync = ref.watch(dashboardStatsProvider);
+    final statsAsync = ref.watch(dashboardStatsProvider);
+    final completionsAsync = ref.watch(
+      completionTrendProvider(_periodToDays(_selectedPeriod)),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -53,7 +71,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Global stats
-              dashboardStatsAsync.when(
+              statsAsync.when(
                 data: (stats) => _buildGlobalStats(stats),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (_, __) => const SizedBox.shrink(),
@@ -75,7 +93,13 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                       const SizedBox(height: AppConstants.paddingLarge),
                       _buildStreakLeaderboard(habits),
                       const SizedBox(height: AppConstants.paddingLarge),
-                      _buildWeeklyProgress(habits, <DateTime, int>{}),
+                      completionsAsync.when(
+                        data: (completions) =>
+                            _buildWeeklyProgress(habits, completions),
+                        loading: () =>
+                            const Center(child: CircularProgressIndicator()),
+                        error: (_, __) => const SizedBox.shrink(),
+                      ),
                     ],
                   );
                 },

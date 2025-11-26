@@ -1,5 +1,8 @@
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import '../core/constants/app_constants.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest_all.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../core/errors/exceptions.dart';
 
 /// Service de gestion des notifications locales
@@ -16,6 +19,18 @@ class NotificationService {
   /// Initialise le service de notifications
   Future<void> initialize() async {
     if (_initialized) return;
+
+    try {
+      initializeTimeZones();
+      final timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
+      tz.setLocalLocation(tz.getLocation(timeZoneName));
+    } catch (e, stackTrace) {
+      throw NotificationException(
+        message: 'Impossible d\'initialiser le fuseau horaire local',
+        originalException: e,
+        stackTrace: stackTrace,
+      );
+    }
 
     const androidSettings = AndroidInitializationSettings(
       '@mipmap/ic_launcher',
@@ -38,7 +53,7 @@ class NotificationService {
 
     if (granted != true) {
       throw NotificationException(
-        message: 'Permission de notification refusée',
+        message: 'Permissions de notifications non accordées',
       );
     }
 
@@ -104,24 +119,17 @@ class NotificationService {
     }
 
     await _notifications.zonedSchedule(
-      habitId, // Utiliser l'ID de l'habitude comme ID de notification
+      habitId,
       'Rappel: $habitName',
       'Il est temps de compléter votre habitude! 💪',
       scheduledDate,
       NotificationDetails(
         android: AndroidNotificationDetails(
-          'habit_reminders',
-          'Rappels d\'habitudes',
-          channelDescription: 'Notifications pour vos habitudes quotidiennes',
-          importance: Importance.high,
-          priority: Priority.high,
-          showWhen: true,
+          AppConstants.notificationChannelId,
+          AppConstants.notificationChannelName,
+          channelDescription: AppConstants.notificationChannelDescription,
         ),
-        iOS: DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-        ),
+        iOS: const DarwinNotificationDetails(),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
@@ -150,27 +158,19 @@ class NotificationService {
   }) async {
     if (!_initialized) await initialize();
 
+    final milestoneNotificationId = habitId * 1000;
+
     await _notifications.show(
-      habitId + 10000, // Offset pour éviter conflit avec rappels
-      '🎉 Milestone atteint!',
-      '$habitName: $message',
-      NotificationDetails(
+      milestoneNotificationId,
+      '🔥 Série de $streak jours',
+      '$habitName · $message',
+      const NotificationDetails(
         android: AndroidNotificationDetails(
-          'habit_milestones',
-          'Milestones',
-          channelDescription: 'Célébration de vos accomplissements',
-          importance: Importance.max,
-          priority: Priority.high,
-          styleInformation: BigTextStyleInformation(
-            '$habitName: $message',
-            contentTitle: '🎉 Milestone atteint!',
-          ),
+          AppConstants.notificationChannelId,
+          AppConstants.notificationChannelName,
+          channelDescription: AppConstants.notificationChannelDescription,
         ),
-        iOS: DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-        ),
+        iOS: DarwinNotificationDetails(),
       ),
     );
   }

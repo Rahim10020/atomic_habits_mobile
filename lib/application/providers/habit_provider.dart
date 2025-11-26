@@ -88,6 +88,24 @@ final dashboardStatsProvider = FutureProvider<DashboardStats>((ref) async {
   );
 });
 
+// Completion Trend Provider
+final completionTrendProvider = FutureProvider.family<Map<DateTime, int>, int>((
+  ref,
+  days,
+) async {
+  final repository = ref.watch(habitRepositoryProvider);
+  final normalizedDays = days < 1 ? 1 : days;
+  final now = DateTime.now();
+  final endOfToday = DateTime(now.year, now.month, now.day, 23, 59, 59);
+  final start = DateTime(
+    now.year,
+    now.month,
+    now.day,
+  ).subtract(Duration(days: normalizedDays - 1));
+
+  return repository.getCompletionCountByDay(start: start, end: endOfToday);
+});
+
 // Habit Controller for actions
 class HabitController extends StateNotifier<AsyncValue<void>> {
   final HabitRepository _repository;

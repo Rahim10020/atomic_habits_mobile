@@ -11,20 +11,30 @@ abstract class HabitRepository {
   Future<void> updateHabit(Habit habit);
   Future<void> deleteHabit(int id);
   Future<void> softDeleteHabit(int id);
-  
+
   // Habit Logs
   Future<List<HabitLog>> getLogsForHabit(int habitId);
   Future<HabitLog?> getLogForHabitOnDate(int habitId, DateTime date);
-  Future<void> completeHabit(int habitId, {String? note, int? mood, bool? wasEasy});
+  Future<void> completeHabit(
+    int habitId, {
+    String? note,
+    int? mood,
+    bool? wasEasy,
+  });
   Future<void> uncompleteHabit(int habitId, DateTime date);
-  
+
   // Statistics
   Future<Map<DateTime, bool>> getCompletionHistory(int habitId, int days);
   Future<int> getCurrentStreak(int habitId);
   Future<HabitStatistics> getHabitStatistics(int habitId);
-  
+
   // Dashboard data
   Future<int> getTodayCompletedCount();
   Future<int> getTodayPendingCount();
   Future<List<Habit>> getTodayHabits();
+
+  Future<Map<DateTime, int>> getCompletionCountByDay({
+    required DateTime start,
+    required DateTime end,
+  });
 }

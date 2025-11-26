@@ -1,3 +1,5 @@
+import 'package:atomic_habits_mobile/core/constants/dimensions.dart';
+
 class AppConstants {
   // App Info
   static const String appName = 'Atomic Habits';
@@ -84,13 +86,13 @@ class AppConstants {
   static const Duration longAnimation = Duration(milliseconds: 500);
 
   // UI Constants
-  static const double borderRadius = 16.0;
+  static const double borderRadius = Dimensions.radiusLarge;
   static const double cardElevation = 2.0;
-  static const double iconSize = 24.0;
-  static const double spacing = 16.0;
-  static const double paddingSmall = 8.0;
-  static const double paddingMedium = 16.0;
-  static const double paddingLarge = 24.0;
+  static const double iconSize = Dimensions.iconMedium;
+  static const double spacing = Dimensions.paddingMedium;
+  static const double paddingSmall = Dimensions.paddingSmall;
+  static const double paddingMedium = Dimensions.paddingMedium;
+  static const double paddingLarge = Dimensions.paddingLarge;
 
   // Milestones (nouveaux)
   static const List<int> milestones = [7, 14, 21, 30, 60, 90, 100, 180, 365];
