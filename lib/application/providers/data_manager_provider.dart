@@ -1,8 +1,11 @@
 import 'package:atomic_habits_mobile/domain/repositories/habit_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/utils/sample_data.dart';
 import 'habit_provider.dart';
+
+final _logger = Logger('DataManagerProvider');
 
 // Provider pour vérifier si c'est le premier lancement
 final firstLaunchProvider = FutureProvider<bool>((ref) async {
@@ -25,7 +28,7 @@ final sampleDataLoaderProvider = FutureProvider<void>((ref) async {
       await repository.createHabit(habit);
     } catch (e) {
       // Ignorer les erreurs de duplication
-      print('Erreur lors du chargement des données: $e');
+      _logger.severe('Erreur lors du chargement des données: $e');
     }
   }
 
