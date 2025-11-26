@@ -121,7 +121,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
                   if (_currentPage < _pages.length - 1)
                     TextButton(
-                      onPressed: () => context.go('/'),
+                      onPressed: () async {
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setBool('first_launch', false);
+                        if (!context.mounted) return;
+                        ref.invalidate(firstLaunchProvider);
+                        context.go('/');
+                      },
                       child: const Text('Passer'),
                     ),
                 ],

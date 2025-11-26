@@ -1,8 +1,9 @@
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 import '../core/constants/app_constants.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../core/errors/exceptions.dart';
 
 /// Service de gestion des notifications locales
@@ -86,7 +87,7 @@ class NotificationService {
       );
     }
 
-    return (androidGranted ?? true) && (iosGranted ?? true);
+    return androidGranted == true && iosGranted == true;
   }
 
   /// Planifie une notification quotidienne pour une habitude
@@ -132,8 +133,6 @@ class NotificationService {
         iOS: const DarwinNotificationDetails(),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents:
           DateTimeComponents.time, // Répéter quotidiennement
     );
