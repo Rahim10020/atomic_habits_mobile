@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'dart:async';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
@@ -9,11 +10,40 @@ import '../../widgets/common/habit_card.dart';
 import 'widgets/daily_summary.dart';
 import 'package:intl/intl.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  Timer? _quoteTimer;
+  int _quoteIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _quoteIndex = DateTime.now().minute % AppConstants.quotes.length;
+    _startQuoteTimer();
+  }
+
+  void _startQuoteTimer() {
+    _quoteTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      setState(() {
+        _quoteIndex = (_quoteIndex + 1) % AppConstants.quotes.length;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _quoteTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final habitsAsync = ref.watch(habitsProvider);
     final dashboardStatsAsync = ref.watch(dashboardStatsProvider);
 
@@ -200,8 +230,7 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildQuoteCard() {
-    final random = DateTime.now().day % AppConstants.quotes.length;
-    final quote = AppConstants.quotes[random];
+    final quote = AppConstants.quotes[_quoteIndex];
 
     return Container(
       padding: const EdgeInsets.all(AppConstants.paddingMedium),
