@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
@@ -8,14 +7,14 @@ import 'widgets/concept_bottom_sheet.dart';
 import 'widgets/law_explanation_card.dart';
 import 'widgets/principle_card.dart';
 
-class GuideScreen extends ConsumerStatefulWidget {
+class GuideScreen extends StatefulWidget {
   const GuideScreen({super.key});
 
   @override
-  ConsumerState<GuideScreen> createState() => _GuideScreenState();
+  State<GuideScreen> createState() => _GuideScreenState();
 }
 
-class _GuideScreenState extends ConsumerState<GuideScreen>
+class _GuideScreenState extends State<GuideScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late final List<_LawGuideContent> _lawGuideContent;
