@@ -1,6 +1,7 @@
 import 'package:atomic_habits_mobile/application/providers/habit_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
@@ -25,6 +26,16 @@ class SettingsScreen extends ConsumerWidget {
             subtitle: Text(_getThemeModeText(themeMode)),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _showThemeDialog(context, ref),
+          ),
+          const Divider(),
+
+          _buildSection('Apprendre'),
+          ListTile(
+            leading: const Icon(Icons.school),
+            title: const Text('Guide Atomic Habits'),
+            subtitle: const Text('Comprendre les concepts du livre'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/guide'),
           ),
           const Divider(),
 

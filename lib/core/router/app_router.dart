@@ -1,3 +1,4 @@
+import 'package:atomic_habits_mobile/presentation/screens/guide/guide_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -18,6 +19,7 @@ class AppRouter {
   static const String habitDetail = '/habit-detail';
   static const String statistics = '/statistics';
   static const String settings = '/settings';
+  static const String guide = '/guide';
 
   static GoRouter router(WidgetRef ref) {
     return GoRouter(
@@ -147,6 +149,18 @@ class AppRouter {
                     position: animation.drive(tween),
                     child: child,
                   );
+                },
+          ),
+        ),
+        GoRoute(
+          path: guide,
+          name: 'guide',
+          pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: const GuideScreen(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(opacity: animation, child: child);
                 },
           ),
         ),

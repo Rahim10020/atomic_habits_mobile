@@ -2,3 +2,5 @@
     'atomic habits' de James Clear et il serait cool de leur expliquer 
     les differentes grandes methodes du livre que j'ai applique 
     dans l'appplication.
+
+- integrer la fonctionnalite de habit stacking de James Clear

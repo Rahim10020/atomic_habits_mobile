@@ -47,6 +47,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       icon: Icons.person_pin,
       color: AppColors.secondary,
     ),
+    OnboardingPage(
+      title: 'Comprendre\nles concepts',
+      description:
+          'Pas familier avec Atomic Habits ? Consultez le guide intégré pour maîtriser les 4 lois',
+      icon: Icons.school,
+      color: AppColors.accent,
+    ),
   ];
 
   @override

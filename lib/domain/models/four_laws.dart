@@ -21,6 +21,53 @@ class FourLaws {
       'Réduisez la friction et rendez l\'habitude aussi simple que possible';
   static const String makeItSatisfyingDescription =
       'Célébrez vos victoires et rendez l\'habitude gratifiante';
+
+  // NOUVEAU: Descriptions détaillées pour l'UI
+  static const Map<String, String> detailedExplanations = {
+    makeItObvious: '''
+La première loi consiste à rendre vos signaux évidents et impossibles à ignorer.
+
+Votre cerveau détecte constamment des indices dans votre environnement qui lui indiquent quoi faire ensuite. En rendant ces signaux plus visibles, vous facilitez le démarrage de votre habitude.
+
+Stratégies clés :
+• Design d'environnement : Placer des objets liés à votre habitude bien en vue
+• Intention d'implémentation : "Je vais [COMPORTEMENT] à [HEURE] dans [LIEU]"
+• Habit stacking : Lier votre nouvelle habitude à une habitude existante
+''',
+
+    makeItAttractive: '''
+La deuxième loi vise à rendre votre habitude irrésistible en l'associant à des expériences positives.
+
+Votre cerveau est câblé pour rechercher des récompenses. En rendant l'habitude attrayante, vous augmentez les chances de la répéter.
+
+Stratégies clés :
+• Temptation bundling : Associer l'habitude à quelque chose que vous aimez
+• Rejoindre une culture : S'entourer de personnes qui incarnent l'identité que vous visez
+• Recadrage mental : Voir l'habitude comme une opportunité, pas une obligation
+''',
+
+    makeItEasy: '''
+La troisième loi consiste à réduire la friction et simplifier au maximum le démarrage.
+
+La loi du moindre effort : nous graviterons naturellement vers l'option qui nécessite le moins de travail. Rendez votre habitude si simple qu'il serait difficile de dire non.
+
+Stratégies clés :
+• Règle des 2 minutes : Réduire l'habitude à une version de 2 minutes
+• Préparer l'environnement : Réduire les étapes entre vous et l'habitude
+• Automatisation : Utiliser la technologie pour rendre l'habitude automatique
+''',
+
+    makeItSatisfying: '''
+La quatrième loi vise à rendre l'habitude gratifiante pour augmenter les chances de répétition.
+
+Le cerveau humain privilégie les récompenses immédiates. En ajoutant une satisfaction instantanée à votre habitude, vous créez un sentiment de succès qui encourage la répétition.
+
+Stratégies clés :
+• Tracking visuel : Marquer chaque jour complété (effet "ne brisez pas la chaîne")
+• Célébration immédiate : Se féliciter après chaque exécution
+• Accountability partner : Partager sa progression avec quelqu'un
+''',
+  };
 }
 
 class FourLawsExamples {
