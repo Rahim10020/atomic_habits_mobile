@@ -4,6 +4,9 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
 import '../../../domain/models/four_laws.dart';
+import 'widgets/concept_bottom_sheet.dart';
+import 'widgets/law_explanation_card.dart';
+import 'widgets/principle_card.dart';
 
 class GuideScreen extends ConsumerStatefulWidget {
   const GuideScreen({super.key});
@@ -15,11 +18,15 @@ class GuideScreen extends ConsumerStatefulWidget {
 class _GuideScreenState extends ConsumerState<GuideScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late final List<_LawGuideContent> _lawGuideContent;
+  late final List<_PrincipleGuideContent> _principleGuideContent;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _lawGuideContent = _buildLawGuideContent();
+    _principleGuideContent = _buildPrincipleGuideContent();
   }
 
   @override
@@ -47,159 +54,343 @@ class _GuideScreenState extends ConsumerState<GuideScreen>
         children: [
           _buildFourLawsTab(),
           _buildPrinciplesTab(),
-          _buildGlossaryTab(),
+          _buildGlossaryTab(context),
         ],
       ),
     );
   }
 
   Widget _buildFourLawsTab() {
-    return ListView(
+    return ListView.separated(
       padding: const EdgeInsets.all(AppConstants.paddingMedium),
-      children: [
-        _buildLawCard(
-          title: FourLaws.makeItObvious,
-          description: FourLaws.makeItObviousDescription,
-          icon: Icons.visibility,
-          color: AppColors.primary,
-          examples: FourLawsExamples.cueExamples,
-        ),
-        const SizedBox(height: AppConstants.paddingMedium),
-        _buildLawCard(
-          title: FourLaws.makeItAttractive,
-          description: FourLaws.makeItAttractiveDescription,
-          icon: Icons.favorite,
-          color: AppColors.accent,
-          examples: FourLawsExamples.cravingExamples,
-        ),
-        const SizedBox(height: AppConstants.paddingMedium),
-        _buildLawCard(
-          title: FourLaws.makeItEasy,
-          description: FourLaws.makeItEasyDescription,
-          icon: Icons.speed,
-          color: AppColors.secondary,
-          examples: FourLawsExamples.responseExamples,
-        ),
-        const SizedBox(height: AppConstants.paddingMedium),
-        _buildLawCard(
-          title: FourLaws.makeItSatisfying,
-          description: FourLaws.makeItSatisfyingDescription,
-          icon: Icons.star,
-          color: AppColors.success,
-          examples: FourLawsExamples.rewardExamples,
-        ),
-      ],
+      itemCount: _lawGuideContent.length,
+      separatorBuilder: (_, __) =>
+          const SizedBox(height: AppConstants.paddingMedium),
+      itemBuilder: (context, index) {
+        final law = _lawGuideContent[index];
+        return LawExplanationCard(
+          title: law.title,
+          subtitle: law.subtitle,
+          explanation: law.explanation,
+          playbook: law.playbook,
+          examples: law.examples,
+          identityShift: law.identityShift,
+          icon: law.icon,
+          color: law.color,
+        );
+      },
     );
   }
 
   Widget _buildPrinciplesTab() {
     return ListView(
       padding: const EdgeInsets.all(AppConstants.paddingMedium),
-      children: AtomicHabitsPrinciples.keyPrinciples.map((principle) {
+      children: _principleGuideContent.map((principle) {
+        return PrincipleCard(
+          title: principle.title,
+          description: principle.description,
+          actionTips: principle.actionTips,
+          icon: principle.icon,
+          color: principle.color,
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildGlossaryTab(BuildContext context) {
+    final entries = AtomicHabitsPrinciples.conceptExplanations.entries.toList();
+    return ListView.builder(
+      padding: const EdgeInsets.all(AppConstants.paddingMedium),
+      itemCount: entries.length,
+      itemBuilder: (_, index) {
+        final entry = entries[index];
         return Card(
           margin: const EdgeInsets.only(bottom: AppConstants.paddingMedium),
-          child: Padding(
-            padding: const EdgeInsets.all(AppConstants.paddingMedium),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.check_circle,
-                    color: AppColors.primary,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(principle, style: AppTextStyles.bodyMedium),
-                ),
-              ],
+          child: ListTile(
+            leading: Icon(Icons.menu_book, color: AppColors.primary),
+            title: Text(entry.key, style: AppTextStyles.titleMedium),
+            subtitle: Text(entry.value, style: AppTextStyles.bodySmall),
+            trailing: IconButton(
+              icon: const Icon(Icons.info_outline),
+              color: AppColors.primary,
+              onPressed: () {
+                showConceptBottomSheet(
+                  context: context,
+                  title: entry.key,
+                  description: entry.value,
+                  color: AppColors.primary,
+                  actionSteps: _glossaryActionSteps(entry.key),
+                  identityShifts: _glossaryIdentityShifts(entry.key),
+                  examples: const [],
+                  ctaLabel: null,
+                );
+              },
             ),
           ),
         );
-      }).toList(),
+      },
     );
   }
 
-  Widget _buildGlossaryTab() {
-    return ListView(
-      padding: const EdgeInsets.all(AppConstants.paddingMedium),
-      children: AtomicHabitsPrinciples.conceptExplanations.entries.map((entry) {
-        return ExpansionTile(
-          title: Text(entry.key, style: AppTextStyles.titleMedium),
-          leading: Icon(Icons.menu_book, color: AppColors.primary),
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(AppConstants.paddingMedium),
-              child: Text(entry.value, style: AppTextStyles.bodyMedium),
-            ),
-          ],
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildLawCard({
-    required String title,
-    required String description,
-    required IconData icon,
-    required Color color,
-    required List<String> examples,
-  }) {
-    return Card(
-      child: ExpansionTile(
-        leading: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, color: color, size: 24),
-        ),
-        title: Text(title, style: AppTextStyles.titleMedium),
-        subtitle: Text(description, style: AppTextStyles.bodySmall),
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(AppConstants.paddingMedium),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Exemples concrets :',
-                  style: AppTextStyles.labelMedium.copyWith(color: color),
-                ),
-                const SizedBox(height: 8),
-                ...examples
-                    .take(3)
-                    .map(
-                      (example) => Padding(
-                        padding: const EdgeInsets.only(bottom: 4),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(Icons.arrow_right, size: 16, color: color),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                example,
-                                style: AppTextStyles.bodySmall,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-              ],
-            ),
-          ),
+  List<_LawGuideContent> _buildLawGuideContent() {
+    return [
+      _LawGuideContent(
+        title: FourLaws.makeItObvious,
+        subtitle: FourLaws.makeItObviousDescription,
+        explanation: FourLaws.detailedExplanations[FourLaws.makeItObvious]!,
+        icon: Icons.visibility,
+        color: AppColors.primary,
+        playbook: [
+          'Rédige ton intention d’implémentation : “Je vais [COMPORTEMENT] à [HEURE] dans [LIEU]”.',
+          'Empile la nouvelle habitude sur une routine déjà automatique pour que le signal soit impossible à manquer.',
+          'Conçois ton environnement : laisse les indices en évidence et retire tout ce qui brouille le message.',
         ],
+        examples: FourLawsExamples.cueExamples,
+        identityShift:
+            'Identité : “Je suis l’architecte de mon environnement, pas sa victime.”',
       ),
-    );
+      _LawGuideContent(
+        title: FourLaws.makeItAttractive,
+        subtitle: FourLaws.makeItAttractiveDescription,
+        explanation: FourLaws.detailedExplanations[FourLaws.makeItAttractive]!,
+        icon: Icons.favorite,
+        color: AppColors.accent,
+        playbook: [
+          'Associe la routine à un plaisir immédiat (temptation bundling) pour créer de la dopamine anticipée.',
+          'Rejoins une culture où le comportement que tu veux incarner est la norme.',
+          'Reformule ton discours interne : transforme “je dois” en “je choisis de voter pour mon identité”.',
+        ],
+        examples: FourLawsExamples.cravingExamples,
+        identityShift:
+            'Identité : “Je suis quelqu’un qui rend ses routines irrésistibles.”',
+      ),
+      _LawGuideContent(
+        title: FourLaws.makeItEasy,
+        subtitle: FourLaws.makeItEasyDescription,
+        explanation: FourLaws.detailedExplanations[FourLaws.makeItEasy]!,
+        icon: Icons.speed,
+        color: AppColors.secondary,
+        playbook: [
+          'Applique la règle des 2 minutes : réduis chaque habitude à la version la plus simple.',
+          'Supprime la friction en préparant le matériel, l’environnement et les décisions à l’avance.',
+          'Automatise (rappels, débits automatiques) pour que la bonne action devienne le chemin du moindre effort.',
+        ],
+        examples: FourLawsExamples.responseExamples,
+        identityShift:
+            'Identité : “Je suis quelqu’un qui se présente chaque jour, même pour une version minuscule.”',
+      ),
+      _LawGuideContent(
+        title: FourLaws.makeItSatisfying,
+        subtitle: FourLaws.makeItSatisfyingDescription,
+        explanation: FourLaws.detailedExplanations[FourLaws.makeItSatisfying]!,
+        icon: Icons.star,
+        color: AppColors.success,
+        playbook: [
+          'Crée une récompense immédiate (contrat avec toi-même, transfert vers un compte plaisir, célébration).',
+          'Suis tes progrès visuellement : ne brise pas la chaîne et ne manque jamais deux fois.',
+          'Cherche de la responsabilité (partenaire, contrat d’habitudes) pour rendre la déviation coûteuse.',
+        ],
+        examples: FourLawsExamples.rewardExamples,
+        identityShift:
+            'Identité : “Je suis quelqu’un qui célèbre chaque vote pour mon futur moi.”',
+      ),
+    ];
   }
+
+  List<_PrincipleGuideContent> _buildPrincipleGuideContent() {
+    return [
+      _PrincipleGuideContent(
+        title: '1% d’amélioration chaque jour = 37x mieux en un an',
+        description:
+            'Les micro-progrès forment un intérêt composé. La constance bat l’intensité et permet de franchir le plateau du potentiel latent.',
+        actionTips: [
+          'Planifie une micro-victoire quotidienne (2 minutes minimum).',
+          'Enregistre ton progrès dans un tracker pour rendre la chaîne visible.',
+          'Fais une revue hebdo : qu’est-ce qui t’a rapproché de +1% ?',
+        ],
+        icon: Icons.trending_up,
+        color: AppColors.success,
+      ),
+      _PrincipleGuideContent(
+        title: 'Vous tombez au niveau de vos systèmes',
+        description:
+            'Les objectifs fixent une direction, mais seuls les systèmes quotidiens créent la transformation durable.',
+        actionTips: [
+          'Liste tes habitudes actuelles (+ / - / =).',
+          'Construit un système simple (signal → routine → récompense).',
+          'Optimise ton environnement avant de chercher plus de discipline.',
+        ],
+        icon: Icons.hub,
+        color: AppColors.primary,
+      ),
+      _PrincipleGuideContent(
+        title: 'Chaque action est un vote pour ton identité',
+        description:
+            'Le changement durable part de qui tu veux devenir, pas de ce que tu veux obtenir.',
+        actionTips: [
+          'Écris “Je suis quelqu’un qui…” pour l’identité ciblée.',
+          'Associe chaque habitude à ce vote (même minuscule).',
+          'Rappelle-toi que la perfection n’est pas requise : accumule les votes positifs.',
+        ],
+        icon: Icons.verified_user,
+        color: AppColors.accent,
+      ),
+      _PrincipleGuideContent(
+        title: 'La vallée de la déception',
+        description:
+            'Les progrès semblent invisibles jusqu’au seuil critique. Reste sur le système jusqu’au plateau du potentiel latent.',
+        actionTips: [
+          'Mesure le processus (minutes, répétitions) pas uniquement le résultat.',
+          'Documente tes apprentissages quand rien ne semble bouger.',
+          'Prépare une récompense différée pour célébrer la persévérance.',
+        ],
+        icon: Icons.terrain,
+        color: AppColors.secondary,
+      ),
+      _PrincipleGuideContent(
+        title: 'Habitudes = intérêt composé de l’amélio. personnelle',
+        description:
+            'Ce que tu répètes devient ta nouvelle ligne de base. Les micro-choix se cumulent dans les deux sens.',
+        actionTips: [
+          'Associe chaque habitude à un bénéfice long terme clair.',
+          'Supprime les habitudes neutres (=) qui n’ajoutent aucun intérêt.',
+          'Planifie un audit trimestriel des systèmes.',
+        ],
+        icon: Icons.repeat,
+        color: AppColors.info,
+      ),
+      _PrincipleGuideContent(
+        title: 'Ne manque jamais deux fois',
+        description:
+            'Manquer une fois est un accident. Le rattrapage immédiat préserve la chaîne et la confiance identitaire.',
+        actionTips: [
+          'Crée un plan “si je rate, alors je fais …” avant de commencer.',
+          'Garde une version de secours (micro-routine) pour les journées chargées.',
+          'Célèbre le rebond plus fort que la performance parfaite.',
+        ],
+        icon: Icons.auto_fix_high,
+        color: AppColors.warning,
+      ),
+      _PrincipleGuideContent(
+        title: 'Les professionnels respectent l’emploi du temps',
+        description:
+            'La motivation suit l’action. S’engager sur un créneau protège des aléas et de l’ennui.',
+        actionTips: [
+          'Bloque un rendez-vous non négociable avec ta nouvelle habitude.',
+          'Prépare ton matériel juste après la séance pour réduire la friction future.',
+          'Utilise un rappel contextuel (alarme + note) pour automatiser le démarrage.',
+        ],
+        icon: Icons.schedule,
+        color: AppColors.secondary,
+      ),
+      _PrincipleGuideContent(
+        title: 'Tombe amoureux de l’ennui',
+        description:
+            'Le véritable avantage concurrentiel vient de la capacité à répéter même quand l’émotion n’est pas là.',
+        actionTips: [
+          'Définis des standards minimums à respecter quoi qu’il arrive.',
+          'Varie le contexte ou la playlist, pas la routine cœur.',
+          'Note comment tu te sens avant/après pour prouver que l’action change l’état.',
+        ],
+        icon: Icons.favorite_border,
+        color: AppColors.accent,
+      ),
+    ];
+  }
+
+  List<String> _glossaryActionSteps(String concept) {
+    final map = <String, List<String>>{
+      'Amélioration de 1%': [
+        'Choisis un indicateur simple (minutes, pages, répétitions).',
+        'Enregistre quotidiennement tes votes positifs.',
+        'Planifie une révision mensuelle pour observer l’intérêt composé.',
+      ],
+      'Habitudes basées sur l\'identité': [
+        'Complète la phrase : “Je suis quelqu’un qui…”.',
+        'Associe chaque action à cette identité.',
+        'Élimine les routines contradictoires (votes négatifs).',
+      ],
+      'Les systèmes battent les objectifs': [
+        'Décompose ton objectif en boucle signal → envie → réponse → récompense.',
+        'Optimise l’environnement avant de demander plus de volonté.',
+        'Documente le processus pour le répliquer.',
+      ],
+      'Règle des 2 minutes': [
+        'Réduis la nouvelle habitude jusqu’à ce qu’elle prenne 120 secondes.',
+        'Prépare une version “mode secours” pour les journées chargées.',
+        'Une fois la version mini masterisée, allonge graduellement.',
+      ],
+      'Empilement d\'habitudes': [
+        'Liste tes routines automatiques actuelles.',
+        'Associe la nouvelle habitude juste après un déclencheur stable.',
+        'Répète la formule : “Après [routine], je vais [habitude 2 min]”.',
+      ],
+    };
+    return map[concept] ??
+        [
+          'Note une action concrète à tester cette semaine.',
+          'Observe comment ton environnement influence le comportement.',
+          'Fais une revue vendredi pour ajuster ton système.',
+        ];
+  }
+
+  List<String> _glossaryIdentityShifts(String concept) {
+    final map = <String, List<String>>{
+      'Amélioration de 1%': [
+        'Je suis quelqu’un qui s’améliore même quand la progression est invisible.',
+      ],
+      'Habitudes basées sur l\'identité': [
+        'Je décide d’abord qui je suis, puis j’agis en conséquence.',
+      ],
+      'Les systèmes battent les objectifs': [
+        'Je suis un designer de systèmes, pas un chasseur d’objectifs.',
+      ],
+      'Règle des 2 minutes': [
+        'Je suis quelqu’un qui se présente, même pour une version ridiculement simple.',
+      ],
+      'Empilement d\'habitudes': [
+        'Je suis quelqu’un qui transforme ses routines actuelles en tremplin vers de meilleures versions de moi-même.',
+      ],
+    };
+    return map[concept] ??
+        ['Je suis une personne qui construit consciemment ses comportements.'];
+  }
+}
+
+class _LawGuideContent {
+  final String title;
+  final String subtitle;
+  final String explanation;
+  final List<String> playbook;
+  final List<String> examples;
+  final String identityShift;
+  final IconData icon;
+  final Color color;
+
+  const _LawGuideContent({
+    required this.title,
+    required this.subtitle,
+    required this.explanation,
+    required this.playbook,
+    required this.examples,
+    required this.identityShift,
+    required this.icon,
+    required this.color,
+  });
+}
+
+class _PrincipleGuideContent {
+  final String title;
+  final String description;
+  final List<String> actionTips;
+  final IconData icon;
+  final Color color;
+
+  const _PrincipleGuideContent({
+    required this.title,
+    required this.description,
+    required this.actionTips,
+    required this.icon,
+    required this.color,
+  });
 }

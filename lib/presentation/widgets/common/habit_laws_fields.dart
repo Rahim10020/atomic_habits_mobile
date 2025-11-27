@@ -4,6 +4,7 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
 import '../../../domain/models/four_laws.dart';
+import '../../screens/guide/widgets/concept_bottom_sheet.dart';
 
 class HabitLawsFields extends StatelessWidget {
   final TextEditingController cueController;
@@ -11,6 +12,48 @@ class HabitLawsFields extends StatelessWidget {
   final TextEditingController responseController;
   final TextEditingController rewardController;
   final bool showExamples;
+
+  static const Map<String, List<String>> _lawActionSteps = {
+    FourLaws.makeItObvious: [
+      'Rédige ton intention d’implémentation (quoi, quand, où).',
+      'Empile cette habitude sur une routine déjà automatique.',
+      'Optimise l’environnement : rends le signal visible et frictionless.',
+    ],
+    FourLaws.makeItAttractive: [
+      'Associe la routine à un plaisir immédiat (temptation bundling).',
+      'Rejoins une communauté qui valorise ce comportement.',
+      'Reformule mentalement : transforme “je dois” en “je vote pour mon identité”.',
+    ],
+    FourLaws.makeItEasy: [
+      'Applique la règle des 2 minutes pour garantir le démarrage.',
+      'Prépare ton matériel la veille afin de réduire la friction.',
+      'Automatise ou planifie un rappel pour rendre l’action inévitable.',
+    ],
+    FourLaws.makeItSatisfying: [
+      'Prévois une récompense instantanée après l’habitude.',
+      'Suis ta progression (ne brise pas la chaîne).',
+      'Cherche un partenaire ou un contrat d’habitudes pour la responsabilité.',
+    ],
+  };
+
+  static const Map<String, List<String>> _lawIdentityShifts = {
+    FourLaws.makeItObvious: [
+      'Je suis l’architecte de mon environnement.',
+      'Je rends les bons signaux impossible à ignorer.',
+    ],
+    FourLaws.makeItAttractive: [
+      'Je rends mes routines irrésistibles.',
+      'Je choisis des communautés qui tirent le meilleur de moi.',
+    ],
+    FourLaws.makeItEasy: [
+      'Je suis quelqu’un qui se présente chaque jour, même 2 minutes.',
+      'Je simplifie avant d’optimiser.',
+    ],
+    FourLaws.makeItSatisfying: [
+      'Je célèbre chaque vote pour mon futur moi.',
+      'Je protège ma chaîne de progression : jamais deux jours manqués.',
+    ],
+  };
 
   const HabitLawsFields({
     super.key,
@@ -36,9 +79,10 @@ class HabitLawsFields extends StatelessWidget {
           examples: showExamples
               ? FourLawsExamples.cueExamples.take(3).toList()
               : [],
+          actionSteps: _lawActionSteps[FourLaws.makeItObvious]!,
+          identityShifts: _lawIdentityShifts[FourLaws.makeItObvious]!,
         ),
         const SizedBox(height: AppConstants.paddingLarge),
-
         _buildLawSection(
           context: context,
           law: FourLaws.makeItAttractive,
@@ -50,9 +94,10 @@ class HabitLawsFields extends StatelessWidget {
           examples: showExamples
               ? FourLawsExamples.cravingExamples.take(3).toList()
               : [],
+          actionSteps: _lawActionSteps[FourLaws.makeItAttractive]!,
+          identityShifts: _lawIdentityShifts[FourLaws.makeItAttractive]!,
         ),
         const SizedBox(height: AppConstants.paddingLarge),
-
         _buildLawSection(
           context: context,
           law: FourLaws.makeItEasy,
@@ -64,9 +109,10 @@ class HabitLawsFields extends StatelessWidget {
           examples: showExamples
               ? FourLawsExamples.responseExamples.take(3).toList()
               : [],
+          actionSteps: _lawActionSteps[FourLaws.makeItEasy]!,
+          identityShifts: _lawIdentityShifts[FourLaws.makeItEasy]!,
         ),
         const SizedBox(height: AppConstants.paddingLarge),
-
         _buildLawSection(
           context: context,
           law: FourLaws.makeItSatisfying,
@@ -78,6 +124,8 @@ class HabitLawsFields extends StatelessWidget {
           examples: showExamples
               ? FourLawsExamples.rewardExamples.take(3).toList()
               : [],
+          actionSteps: _lawActionSteps[FourLaws.makeItSatisfying]!,
+          identityShifts: _lawIdentityShifts[FourLaws.makeItSatisfying]!,
         ),
       ],
     );
@@ -91,6 +139,8 @@ class HabitLawsFields extends StatelessWidget {
     required IconData icon,
     required Color color,
     required List<String> examples,
+    required List<String> actionSteps,
+    required List<String> identityShifts,
     required BuildContext context,
   }) {
     return Column(
@@ -121,19 +171,22 @@ class HabitLawsFields extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 4),
-                      // IconButton info
                       IconButton(
                         icon: Icon(
                           Icons.info_outline,
                           size: 18,
                           color: color.withValues(alpha: 0.7),
                         ),
-                        onPressed: () => _showConceptExplanation(
-                          context,
-                          law,
-                          description,
-                          examples,
-                          color,
+                        onPressed: () => showConceptBottomSheet(
+                          context: context,
+                          title: law,
+                          description: description,
+                          color: color,
+                          actionSteps: actionSteps,
+                          identityShifts: identityShifts,
+                          examples: examples,
+                          ctaLabel: 'Explorer le guide complet',
+                          onCtaPressed: () => context.push('/guide'),
                         ),
                         tooltip: 'En savoir plus',
                         visualDensity: VisualDensity.compact,
@@ -152,7 +205,6 @@ class HabitLawsFields extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 12),
-
         TextFormField(
           controller: controller,
           decoration: InputDecoration(
@@ -192,109 +244,6 @@ class HabitLawsFields extends StatelessWidget {
           ),
         ],
       ],
-    );
-  }
-
-  // methode pour les explications
-  void _showConceptExplanation(
-    BuildContext context,
-    String title,
-    String description,
-    List<String> examples,
-    Color color,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.6,
-        maxChildSize: 0.9,
-        minChildSize: 0.4,
-        expand: false,
-        builder: (context, scrollController) => SingleChildScrollView(
-          controller: scrollController,
-          padding: const EdgeInsets.all(AppConstants.paddingLarge),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(Icons.lightbulb, color: color, size: 28),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(title, style: AppTextStyles.headlineSmall),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Text(description, style: AppTextStyles.bodyLarge),
-              const SizedBox(height: 24),
-              Text(
-                'Exemples concrets :',
-                style: AppTextStyles.titleMedium.copyWith(color: color),
-              ),
-              const SizedBox(height: 12),
-              ...examples
-                  .take(5)
-                  .map(
-                    (example) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(Icons.check_circle, size: 16, color: color),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              example,
-                              style: AppTextStyles.bodyMedium,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    context.push('/guide');
-                  },
-                  icon: const Icon(Icons.book),
-                  label: const Text('Voir le guide complet'),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: color,
-                    side: BorderSide(color: color),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
