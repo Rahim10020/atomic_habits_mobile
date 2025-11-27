@@ -41,12 +41,12 @@ class _HabitCardState extends ConsumerState<HabitCard> {
       onTap: () => context.push('/habit-detail/${widget.habit.id}'),
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.surfaceLight,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
           border: Border.all(
             color: isCompleted
                 ? categoryColor.withValues(alpha: 0.3)
-                : AppColors.borderLight,
+                : Theme.of(context).colorScheme.surfaceContainerHighest,
             width: 2,
           ),
           boxShadow: [
@@ -101,8 +101,10 @@ class _HabitCardState extends ConsumerState<HabitCard> {
                                   ? TextDecoration.lineThrough
                                   : null,
                               color: isCompleted
-                                  ? AppColors.textSecondaryLight
-                                  : AppColors.textPrimaryLight,
+                                  ? Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant
+                                  : Theme.of(context).colorScheme.onSurface,
                             ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -113,7 +115,9 @@ class _HabitCardState extends ConsumerState<HabitCard> {
                             Text(
                               widget.habit.description!,
                               style: AppTextStyles.bodySmall.copyWith(
-                                color: AppColors.textSecondaryLight,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -153,7 +157,7 @@ class _HabitCardState extends ConsumerState<HabitCard> {
                     // Arrow icon
                     Icon(
                       Icons.chevron_right_rounded,
-                      color: AppColors.textSecondaryLight,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ],
                 ),
