@@ -1,3 +1,4 @@
+import 'package:atomic_habits_mobile/application/providers/habit_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_constants.dart';
@@ -169,16 +170,25 @@ class SettingsScreen extends ConsumerWidget {
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-
-              final dataManager = ref.read(dataManagerProvider.notifier);
-              await dataManager.loadSampleData();
-
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
+              final messenger = ScaffoldMessenger.of(context);
+              try {
+                final dataManager = ref.read(dataManagerProvider.notifier);
+                await dataManager.loadSampleData();
+                ref
+                  ..invalidate(habitsProvider)
+                  ..invalidate(dashboardStatsProvider)
+                  ..invalidate(completionTrendProvider(7));
+                messenger.showSnackBar(
                   SnackBar(
-                    content: const Text('Habitudes d\'exemple chargées!'),
+                    content: const Text('Habitudes d\'exemple chargées !'),
                     backgroundColor: AppColors.success,
-                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              } catch (error) {
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text('Échec du chargement : $error'),
+                    backgroundColor: AppColors.error,
                   ),
                 );
               }

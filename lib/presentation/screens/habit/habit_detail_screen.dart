@@ -375,10 +375,11 @@ class HabitDetailScreen extends ConsumerWidget {
     );
   }
 
-  void _showDeleteDialog(BuildContext context, WidgetRef ref) {
+  Future<void> _showDeleteDialog(BuildContext context, WidgetRef ref) async {
+    final parentContext = context;
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text('Supprimer l\'habitude'),
         content: const Text(
           'Êtes-vous sûr de vouloir supprimer cette habitude ? Cette action est irréversible.',
@@ -392,11 +393,13 @@ class HabitDetailScreen extends ConsumerWidget {
             onPressed: () async {
               final controller = ref.read(habitControllerProvider.notifier);
               await controller.deleteHabit(habitId);
-              ref.invalidate(habitsProvider);
-
-              if (context.mounted) {
-                Navigator.pop(context);
-                context.pop();
+              ref
+                ..invalidate(habitsProvider)
+                ..invalidate(dashboardStatsProvider)
+                ..invalidate(habitStatisticsProvider(habitId));
+              if (parentContext.mounted) {
+                Navigator.pop(dialogContext);
+                parentContext.pop();
               }
             },
             style: TextButton.styleFrom(foregroundColor: AppColors.error),
