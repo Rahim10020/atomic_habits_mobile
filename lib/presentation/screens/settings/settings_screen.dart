@@ -7,6 +7,7 @@ import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
 import '../../../application/providers/data_manager_provider.dart';
 import '../../../application/providers/theme_mode_provider.dart';
+import '../../../services/backup_service.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -45,6 +46,31 @@ class SettingsScreen extends ConsumerWidget {
             title: const Text('Charger les habitudes d\'exemple'),
             subtitle: const Text('Ajouter 8 habitudes de démonstration'),
             onTap: () => _showLoadSampleDataDialog(context, ref),
+          ),
+          ListTile(
+            leading: const Icon(Icons.save_alt),
+            title: const Text('Exporter les habitudes'),
+            subtitle: const Text('Sauvegarder un fichier JSON'),
+            onTap: () async {
+              final repository = ref.read(habitRepositoryProvider);
+              final backupService = BackupService(repository);
+              final file = await backupService.exportToFile();
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Backup créé : ${file.path}')),
+                );
+              }
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.upload),
+            title: const Text('Importer un backup'),
+            subtitle: const Text('Restaurer depuis un fichier JSON'),
+            onTap: () async {
+              final repository = ref.read(habitRepositoryProvider);
+              final backupService = BackupService(repository);
+              // TODO: brancher un sélecteur de fichier puis backupService.importFromFile(...)
+            },
           ),
           ListTile(
             leading: const Icon(Icons.refresh),

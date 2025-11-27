@@ -61,6 +61,7 @@ class _GuideScreenState extends State<GuideScreen>
 
   Widget _buildFourLawsTab() {
     return ListView.separated(
+      key: const PageStorageKey('guide_laws_tab'),
       padding: const EdgeInsets.all(AppConstants.paddingMedium),
       itemCount: _lawGuideContent.length,
       separatorBuilder: (_, __) =>
@@ -82,9 +83,14 @@ class _GuideScreenState extends State<GuideScreen>
   }
 
   Widget _buildPrinciplesTab() {
-    return ListView(
+    return ListView.separated(
+      key: const PageStorageKey('guide_principles_tab'),
       padding: const EdgeInsets.all(AppConstants.paddingMedium),
-      children: _principleGuideContent.map((principle) {
+      itemCount: _principleGuideContent.length,
+      separatorBuilder: (_, __) =>
+          const SizedBox(height: AppConstants.paddingMedium),
+      itemBuilder: (context, index) {
+        final principle = _principleGuideContent[index];
         return PrincipleCard(
           title: principle.title,
           description: principle.description,
@@ -92,13 +98,14 @@ class _GuideScreenState extends State<GuideScreen>
           icon: principle.icon,
           color: principle.color,
         );
-      }).toList(),
+      },
     );
   }
 
   Widget _buildGlossaryTab(BuildContext context) {
     final entries = AtomicHabitsPrinciples.conceptExplanations.entries.toList();
     return ListView.builder(
+      key: const PageStorageKey('guide_glossary_tab'),
       padding: const EdgeInsets.all(AppConstants.paddingMedium),
       itemCount: entries.length,
       itemBuilder: (_, index) {
