@@ -524,7 +524,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
           Expanded(
             child: ElevatedButton(
               onPressed: details.onStepContinue,
-              child: Text(_currentStep == 3 ? 'Créer' : 'Suivant'),
+              child: Text(_currentStep == 4 ? 'Créer' : 'Suivant'),
             ),
           ),
           if (_currentStep > 0) ...[
