@@ -231,6 +231,15 @@ class AppDatabase extends _$AppDatabase {
     }
   }
 
+  // Bulk operations
+  Future<void> deleteAllHabits() async {
+    await delete(habits).go();
+  }
+
+  Future<void> deleteAllHabitLogs() async {
+    await delete(habitLogs).go();
+  }
+
   // Helper methods to convert database rows to model objects
   Habit _habitFromRow(Habit row) => row;
 

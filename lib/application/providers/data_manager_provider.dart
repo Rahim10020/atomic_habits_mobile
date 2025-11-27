@@ -57,16 +57,11 @@ class DataManager extends StateNotifier<AsyncValue<void>> {
   }
 
   Future<void> clearAllData() async {
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
-      final habits = await _repository.getAllHabits();
+    await _repository.deleteAllHabits();
+    await _repository.deleteAllHabitLogs();
 
-      for (var habit in habits) {
-        await _repository.deleteHabit(habit.id);
-      }
-
-      _ref.invalidate(habitsProvider);
-    });
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('first_launch', true);
   }
 
   Future<void> resetToSampleData() async {

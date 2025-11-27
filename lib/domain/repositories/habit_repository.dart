@@ -37,4 +37,8 @@ abstract class HabitRepository {
     required DateTime start,
     required DateTime end,
   });
+
+  // Bulk operations
+  Future<void> deleteAllHabits();
+  Future<void> deleteAllHabitLogs();
 }

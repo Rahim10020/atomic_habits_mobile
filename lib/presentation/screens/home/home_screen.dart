@@ -86,6 +86,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ]);
         },
         child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             // Daily Summary
             SliverToBoxAdapter(

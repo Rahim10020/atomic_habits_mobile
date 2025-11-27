@@ -354,4 +354,14 @@ class HabitRepositoryImpl implements HabitRepository {
 
     return counts;
   }
+
+  @override
+  Future<void> deleteAllHabits() async {
+    await _database.deleteAllHabits();
+  }
+
+  @override
+  Future<void> deleteAllHabitLogs() async {
+    await _database.deleteAllHabitLogs();
+  }
 }

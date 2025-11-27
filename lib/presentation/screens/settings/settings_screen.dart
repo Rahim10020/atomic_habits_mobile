@@ -340,6 +340,7 @@ class SettingsScreen extends ConsumerWidget {
               try {
                 final dataManager = ref.read(dataManagerProvider.notifier);
                 await dataManager.clearAllData();
+                ref.invalidate(firstLaunchProvider);
 
                 // Invalidate all providers to refresh the app state
                 ref
