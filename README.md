@@ -12,13 +12,15 @@ Une application Flutter moderne pour créer et suivre vos habitudes basée sur l
 - 🎨 **Thèmes clair et sombre** avec design moderne
 - 🏷️ **Catégories** colorées pour organiser vos habitudes
 - 💡 **Citations motivantes** d'Atomic Habits
-- 🔔 **Système de rappels** (configuration UI prête)
+- 🔔 **Système de rappels** avec notifications locales programmées
+- ✏️ **Édition d'habitudes** complète avec suppression
+- 📊 **Écran de statistiques** avec graphiques interactifs (fl_chart)
+- 🔄 **Sauvegarde et restauration** des données locales
+- 🎯 **Écran d'accueil** avec résumé quotidien
+- ⚙️ **Paramètres** et configuration
+- 🚀 **Onboarding** pour nouveaux utilisateurs
 
 ### 🚧 À compléter
-- Génération du code Drift avec build_runner
-- Service de notifications locales
-- Écran de statistiques avec graphiques (fl_chart)
-- Écran d'édition d'habitudes
 - Synchronisation cloud (optionnel)
 
 ## 🏗️ Architecture
@@ -89,12 +91,7 @@ cd atomic_habits_app
 flutter pub get
 ```
 
-3. **Générer le code Drift**
-```bash
-dart run build_runner build --delete-conflicting-outputs
-```
-
-4. **Lancer l'application**
+3. **Lancer l'application**
 ```bash
 flutter run
 ```
@@ -196,9 +193,9 @@ Les tables :
    - Reward: "Marquer mon calendrier avec une étoile"
 ```
 
-## 🔔 Notifications (À implémenter)
+## 🔔 Notifications
 
-Le système de notifications utilise `flutter_local_notifications`:
+Le système de notifications utilise `flutter_local_notifications` pour les rappels quotidiens programmés:
 
 ```dart
 // Exemple de configuration
@@ -208,6 +205,24 @@ await notificationService.scheduleHabitReminder(
   time: TimeOfDay(hour: 7, minute: 0),
 );
 ```
+
+Les notifications incluent également des messages de milestone pour célébrer les séries réussies.
+
+## 💾 Sauvegarde et Restauration
+
+L'application inclut un service de sauvegarde programmatique pour exporter et importer vos habitudes au format JSON :
+
+```dart
+// Exporter toutes les habitudes
+final backupService = BackupService(repository);
+final file = await backupService.exportToFile();
+await backupService.shareBackup();
+
+// Importer depuis un fichier
+final importedCount = await backupService.importFromFile(file);
+```
+
+*Note: L'interface utilisateur pour la sauvegarde sera ajoutée dans une future mise à jour.*
 
 ## 🧪 Tests
 
