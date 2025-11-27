@@ -7,6 +7,7 @@ import 'core/constants/colors.dart';
 import 'application/providers/data_manager_provider.dart';
 import 'application/providers/theme_mode_provider.dart';
 import 'services/notification_service.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +49,8 @@ class MyApp extends ConsumerWidget {
 
       // Localization
       locale: const Locale('fr', 'FR'),
+      supportedLocales: const [Locale('fr', 'FR')],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
 
       // Router with splash screen
       routerConfig: AppRouter.router(ref),
