@@ -50,7 +50,11 @@ class MyApp extends ConsumerWidget {
       // Localization
       locale: const Locale('fr', 'FR'),
       supportedLocales: const [Locale('fr', 'FR')],
-      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
 
       // Router with splash screen
       routerConfig: AppRouter.router(ref),

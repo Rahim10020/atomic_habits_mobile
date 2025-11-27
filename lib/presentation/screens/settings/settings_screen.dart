@@ -203,7 +203,7 @@ class SettingsScreen extends ConsumerWidget {
   void _showResetDataDialog(BuildContext context, WidgetRef ref) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text('Réinitialiser les données'),
         content: const Text(
           'Cette action va supprimer TOUTES vos habitudes actuelles et les remplacer '
@@ -211,12 +211,12 @@ class SettingsScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: const Text('Annuler'),
           ),
           TextButton(
             onPressed: () async {
-              Navigator.pop(context);
+              Navigator.pop(dialogContext);
 
               // Montrer un indicateur de chargement
               showDialog(
@@ -226,18 +226,40 @@ class SettingsScreen extends ConsumerWidget {
                     const Center(child: CircularProgressIndicator()),
               );
 
-              final dataManager = ref.read(dataManagerProvider.notifier);
-              await dataManager.resetToSampleData();
+              try {
+                final dataManager = ref.read(dataManagerProvider.notifier);
+                await dataManager.resetToSampleData();
 
-              if (context.mounted) {
-                Navigator.pop(context); // Fermer le loading
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('Données réinitialisées!'),
-                    backgroundColor: AppColors.success,
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
+                // Invalidate all providers to refresh the app state
+                ref
+                  ..invalidate(habitsProvider)
+                  ..invalidate(dashboardStatsProvider)
+                  ..invalidate(completionTrendProvider(7))
+                  ..invalidate(completionTrendProvider(30));
+
+                if (context.mounted) {
+                  Navigator.pop(context); // Fermer le loading
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('Données réinitialisées!'),
+                      backgroundColor: AppColors.success,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              } catch (error) {
+                if (context.mounted) {
+                  Navigator.pop(context); // Fermer le loading
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Erreur lors de la réinitialisation: $error',
+                      ),
+                      backgroundColor: AppColors.error,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
               }
             },
             style: TextButton.styleFrom(foregroundColor: AppColors.warning),
@@ -251,7 +273,7 @@ class SettingsScreen extends ConsumerWidget {
   void _showDeleteAllDataDialog(BuildContext context, WidgetRef ref) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text('Supprimer toutes les données'),
         content: const Text(
           'Cette action va supprimer DÉFINITIVEMENT toutes vos habitudes et '
@@ -259,12 +281,12 @@ class SettingsScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: const Text('Annuler'),
           ),
           TextButton(
             onPressed: () async {
-              Navigator.pop(context);
+              Navigator.pop(dialogContext);
 
               // Montrer un indicateur de chargement
               showDialog(
@@ -274,20 +296,40 @@ class SettingsScreen extends ConsumerWidget {
                     const Center(child: CircularProgressIndicator()),
               );
 
-              final dataManager = ref.read(dataManagerProvider.notifier);
-              await dataManager.clearAllData();
+              try {
+                final dataManager = ref.read(dataManagerProvider.notifier);
+                await dataManager.clearAllData();
 
-              if (context.mounted) {
-                Navigator.pop(context); // Fermer le loading
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text(
-                      'Toutes les données ont été supprimées',
+                // Invalidate all providers to refresh the app state
+                ref
+                  ..invalidate(habitsProvider)
+                  ..invalidate(dashboardStatsProvider)
+                  ..invalidate(completionTrendProvider(7))
+                  ..invalidate(completionTrendProvider(30));
+
+                if (context.mounted) {
+                  Navigator.pop(context); // Fermer le loading
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text(
+                        'Toutes les données ont été supprimées',
+                      ),
+                      backgroundColor: AppColors.error,
+                      behavior: SnackBarBehavior.floating,
                     ),
-                    backgroundColor: AppColors.error,
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
+                  );
+                }
+              } catch (error) {
+                if (context.mounted) {
+                  Navigator.pop(context); // Fermer le loading
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Erreur lors de la suppression: $error'),
+                      backgroundColor: AppColors.error,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
               }
             },
             style: TextButton.styleFrom(foregroundColor: AppColors.error),

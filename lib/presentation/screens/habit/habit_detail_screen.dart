@@ -386,20 +386,39 @@ class HabitDetailScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: const Text('Annuler'),
           ),
           TextButton(
             onPressed: () async {
-              final controller = ref.read(habitControllerProvider.notifier);
-              await controller.deleteHabit(habitId);
-              ref
-                ..invalidate(habitsProvider)
-                ..invalidate(dashboardStatsProvider)
-                ..invalidate(habitStatisticsProvider(habitId));
-              if (parentContext.mounted) {
-                Navigator.pop(dialogContext);
-                parentContext.pop();
+              try {
+                final controller = ref.read(habitControllerProvider.notifier);
+                await controller.deleteHabit(habitId);
+
+                // Invalidate all relevant providers to ensure full refresh
+                ref
+                  ..invalidate(habitsProvider)
+                  ..invalidate(dashboardStatsProvider)
+                  ..invalidate(habitLogsProvider(habitId))
+                  ..invalidate(todayCompletionProvider(habitId))
+                  ..invalidate(completionTrendProvider(7))
+                  ..invalidate(completionTrendProvider(30));
+
+                if (parentContext.mounted) {
+                  Navigator.pop(dialogContext);
+                  parentContext.pop();
+                }
+              } catch (error) {
+                // Handle any unexpected errors
+                if (parentContext.mounted) {
+                  Navigator.pop(dialogContext);
+                  ScaffoldMessenger.of(parentContext).showSnackBar(
+                    SnackBar(
+                      content: Text('Erreur lors de la suppression: $error'),
+                      backgroundColor: AppColors.error,
+                    ),
+                  );
+                }
               }
             },
             style: TextButton.styleFrom(foregroundColor: AppColors.error),
