@@ -118,6 +118,7 @@ class HabitDetailScreen extends ConsumerWidget {
                               value: '${stats.totalCompletions}',
                               icon: Icons.check_circle,
                               color: AppColors.primary,
+                              context: context,
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -127,6 +128,7 @@ class HabitDetailScreen extends ConsumerWidget {
                               value: '${stats.completionRate.toInt()}%',
                               icon: Icons.trending_up,
                               color: AppColors.success,
+                              context: context,
                             ),
                           ),
                         ],
@@ -177,6 +179,7 @@ class HabitDetailScreen extends ConsumerWidget {
                     content: habit.cue!,
                     icon: Icons.visibility,
                     color: AppColors.primary,
+                    context: context,
                   ),
 
                 if (habit.craving != null)
@@ -185,6 +188,7 @@ class HabitDetailScreen extends ConsumerWidget {
                     content: habit.craving!,
                     icon: Icons.favorite,
                     color: AppColors.accent,
+                    context: context,
                   ),
 
                 if (habit.response != null)
@@ -193,6 +197,7 @@ class HabitDetailScreen extends ConsumerWidget {
                     content: habit.response!,
                     icon: Icons.speed,
                     color: AppColors.secondary,
+                    context: context,
                   ),
 
                 if (habit.reward != null)
@@ -201,6 +206,7 @@ class HabitDetailScreen extends ConsumerWidget {
                     content: habit.reward!,
                     icon: Icons.star,
                     color: AppColors.success,
+                    context: context,
                   ),
               ],
             ),
@@ -258,13 +264,16 @@ class HabitDetailScreen extends ConsumerWidget {
     required String value,
     required IconData icon,
     required Color color,
+    required BuildContext context,
   }) {
     return Container(
       padding: const EdgeInsets.all(AppConstants.paddingMedium),
       decoration: BoxDecoration(
-        color: AppColors.surfaceLight,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-        border: Border.all(color: AppColors.borderLight),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        ),
       ),
       child: Column(
         children: [
@@ -280,7 +289,7 @@ class HabitDetailScreen extends ConsumerWidget {
           Text(
             title,
             style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.textSecondaryLight,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ],
@@ -331,13 +340,14 @@ class HabitDetailScreen extends ConsumerWidget {
     required String content,
     required IconData icon,
     required Color color,
+    required BuildContext context,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Container(
         padding: const EdgeInsets.all(AppConstants.paddingMedium),
         decoration: BoxDecoration(
-          color: AppColors.surfaceLight,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
           border: Border.all(color: color.withValues(alpha: 0.3), width: 2),
         ),

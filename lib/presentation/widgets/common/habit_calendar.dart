@@ -23,9 +23,11 @@ class HabitCalendar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppConstants.paddingMedium),
       decoration: BoxDecoration(
-        color: AppColors.surfaceLight,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-        border: Border.all(color: AppColors.borderLight),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,7 +42,7 @@ class HabitCalendar extends StatelessWidget {
                   child: Text(
                     day,
                     style: AppTextStyles.labelSmall.copyWith(
-                      color: AppColors.textSecondaryLight,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -67,7 +69,7 @@ class HabitCalendar extends StatelessWidget {
               final isCompleted = completionHistory[date] ?? false;
               final isToday = app_date_utils.DateUtils.isToday(date);
 
-              return _buildDayCell(date, isCompleted, isToday);
+              return _buildDayCell(date, isCompleted, isToday, context);
             },
           ),
           const SizedBox(height: 16),
@@ -78,7 +80,10 @@ class HabitCalendar extends StatelessWidget {
             children: [
               _buildLegendItem('Fait', color),
               const SizedBox(width: 16),
-              _buildLegendItem('Pas fait', AppColors.borderLight),
+              _buildLegendItem(
+                'Pas fait',
+                Theme.of(context).colorScheme.surfaceContainerHighest,
+              ),
               const SizedBox(width: 16),
               _buildLegendItem('Aujourd\'hui', AppColors.primary),
             ],
@@ -88,7 +93,12 @@ class HabitCalendar extends StatelessWidget {
     );
   }
 
-  Widget _buildDayCell(DateTime date, bool isCompleted, bool isToday) {
+  Widget _buildDayCell(
+    DateTime date,
+    bool isCompleted,
+    bool isToday,
+    BuildContext context,
+  ) {
     Color backgroundColor;
     Color borderColor;
 
@@ -99,7 +109,7 @@ class HabitCalendar extends StatelessWidget {
       backgroundColor = color.withValues(alpha: 0.8);
       borderColor = color;
     } else {
-      backgroundColor = AppColors.borderLight;
+      backgroundColor = Theme.of(context).colorScheme.surfaceContainerHighest;
       borderColor = Colors.transparent;
     }
 
