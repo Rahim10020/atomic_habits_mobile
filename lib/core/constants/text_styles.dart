@@ -60,6 +60,11 @@ class AppTextStyles {
     height: 1.4,
   );
 
+  static const TextStyle personalizedHabit = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+  );
+
   static const TextStyle titleSmall = TextStyle(
     fontSize: 12,
     fontWeight: FontWeight.w600,

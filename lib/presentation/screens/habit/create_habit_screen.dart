@@ -128,7 +128,10 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
               _onStepContinue();
             },
             icon: const Icon(Icons.create),
-            label: const Text('Créer une habitude personnalisée'),
+            label: const Text(
+              'Créer une habitude personnalisée',
+              style: AppTextStyles.personalizedHabit,
+            ),
           ),
         ],
       ),
@@ -136,38 +139,57 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
   }
 
   Widget _buildTemplatesGrid(List<HabitTemplate> templates) {
-    // Group by category and take first 2 from each
+    // Group by category
     final templatesByCategory = <String, List<HabitTemplate>>{};
     for (var template in templates) {
       if (!templatesByCategory.containsKey(template.category)) {
         templatesByCategory[template.category] = [];
       }
-      if (templatesByCategory[template.category]!.length < 2) {
-        templatesByCategory[template.category]!.add(template);
-      }
+      templatesByCategory[template.category]!.add(template);
     }
 
     return Column(
       children: templatesByCategory.entries.map((entry) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
+        final color = AppColors.categoryColors[entry.key] ?? AppColors.primary;
+
+        return Card(
+          margin: const EdgeInsets.only(bottom: AppConstants.paddingSmall),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+            side: BorderSide(
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            ),
+          ),
+          child: ExpansionTile(
+            leading: Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+            ),
+            title: Text(
               entry.key,
-              style: AppTextStyles.titleMedium.copyWith(
-                color: AppColors.categoryColors[entry.key] ?? AppColors.primary,
+              style: AppTextStyles.titleMedium.copyWith(color: color),
+            ),
+            subtitle: Text(
+              '${entry.value.length} modèle${entry.value.length > 1 ? 's' : ''}',
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.textSecondaryLight,
               ),
             ),
-            const SizedBox(height: AppConstants.paddingSmall),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: entry.value
-                  .map((template) => _buildTemplateCard(template))
-                  .toList(),
-            ),
-            const SizedBox(height: AppConstants.paddingMedium),
-          ],
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(AppConstants.paddingMedium),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: entry.value
+                      .map((template) => _buildTemplateCard(template))
+                      .toList(),
+                ),
+              ),
+            ],
+          ),
         );
       }).toList(),
     );
@@ -187,14 +209,16 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
         _onStepContinue();
       },
       child: Container(
-        width: 160,
+        width: double.infinity,
         padding: const EdgeInsets.all(AppConstants.paddingMedium),
         decoration: BoxDecoration(
           color: isSelected
               ? color.withValues(alpha: 0.1)
-              : AppColors.surfaceLight,
+              : Theme.of(context).colorScheme.surface,
           border: Border.all(
-            color: isSelected ? color : AppColors.borderLight,
+            color: isSelected
+                ? color
+                : Theme.of(context).colorScheme.surfaceContainerHighest,
             width: isSelected ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
