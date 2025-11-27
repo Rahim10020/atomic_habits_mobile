@@ -6,6 +6,7 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
 import '../../../application/providers/data_manager_provider.dart';
+import '../../../core/router/app_router.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -109,7 +110,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           // Invalider le provider pour mettre à jour l'état
                           ref.invalidate(firstLaunchProvider);
 
-                          context.go('/');
+                          context.go(AppRouter.home);
                         } else {
                           _pageController.nextPage(
                             duration: const Duration(milliseconds: 300),
@@ -133,7 +134,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         await prefs.setBool('first_launch', false);
                         if (!context.mounted) return;
                         ref.invalidate(firstLaunchProvider);
-                        context.go('/');
+                        context.go(AppRouter.home);
                       },
                       child: const Text('Passer'),
                     ),
