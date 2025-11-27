@@ -13,48 +13,6 @@ class HabitLawsFields extends StatelessWidget {
   final TextEditingController rewardController;
   final bool showExamples;
 
-  static const Map<String, List<String>> _lawActionSteps = {
-    FourLaws.makeItObvious: [
-      'Rédige ton intention d’implémentation (quoi, quand, où).',
-      'Empile cette habitude sur une routine déjà automatique.',
-      'Optimise l’environnement : rends le signal visible et frictionless.',
-    ],
-    FourLaws.makeItAttractive: [
-      'Associe la routine à un plaisir immédiat (temptation bundling).',
-      'Rejoins une communauté qui valorise ce comportement.',
-      'Reformule mentalement : transforme “je dois” en “je vote pour mon identité”.',
-    ],
-    FourLaws.makeItEasy: [
-      'Applique la règle des 2 minutes pour garantir le démarrage.',
-      'Prépare ton matériel la veille afin de réduire la friction.',
-      'Automatise ou planifie un rappel pour rendre l’action inévitable.',
-    ],
-    FourLaws.makeItSatisfying: [
-      'Prévois une récompense instantanée après l’habitude.',
-      'Suis ta progression (ne brise pas la chaîne).',
-      'Cherche un partenaire ou un contrat d’habitudes pour la responsabilité.',
-    ],
-  };
-
-  static const Map<String, List<String>> _lawIdentityShifts = {
-    FourLaws.makeItObvious: [
-      'Je suis l’architecte de mon environnement.',
-      'Je rends les bons signaux impossible à ignorer.',
-    ],
-    FourLaws.makeItAttractive: [
-      'Je rends mes routines irrésistibles.',
-      'Je choisis des communautés qui tirent le meilleur de moi.',
-    ],
-    FourLaws.makeItEasy: [
-      'Je suis quelqu’un qui se présente chaque jour, même 2 minutes.',
-      'Je simplifie avant d’optimiser.',
-    ],
-    FourLaws.makeItSatisfying: [
-      'Je célèbre chaque vote pour mon futur moi.',
-      'Je protège ma chaîne de progression : jamais deux jours manqués.',
-    ],
-  };
-
   const HabitLawsFields({
     super.key,
     required this.cueController,
@@ -79,8 +37,8 @@ class HabitLawsFields extends StatelessWidget {
           examples: showExamples
               ? FourLawsExamples.cueExamples.take(3).toList()
               : [],
-          actionSteps: _lawActionSteps[FourLaws.makeItObvious]!,
-          identityShifts: _lawIdentityShifts[FourLaws.makeItObvious]!,
+          actionSteps: lawGuideData[FourLaws.makeItObvious]!.actionSteps,
+          identityShifts: lawGuideData[FourLaws.makeItObvious]!.identityShifts,
         ),
         const SizedBox(height: AppConstants.paddingLarge),
         _buildLawSection(
@@ -94,8 +52,9 @@ class HabitLawsFields extends StatelessWidget {
           examples: showExamples
               ? FourLawsExamples.cravingExamples.take(3).toList()
               : [],
-          actionSteps: _lawActionSteps[FourLaws.makeItAttractive]!,
-          identityShifts: _lawIdentityShifts[FourLaws.makeItAttractive]!,
+          actionSteps: lawGuideData[FourLaws.makeItAttractive]!.actionSteps,
+          identityShifts:
+              lawGuideData[FourLaws.makeItAttractive]!.identityShifts,
         ),
         const SizedBox(height: AppConstants.paddingLarge),
         _buildLawSection(
@@ -109,8 +68,8 @@ class HabitLawsFields extends StatelessWidget {
           examples: showExamples
               ? FourLawsExamples.responseExamples.take(3).toList()
               : [],
-          actionSteps: _lawActionSteps[FourLaws.makeItEasy]!,
-          identityShifts: _lawIdentityShifts[FourLaws.makeItEasy]!,
+          actionSteps: lawGuideData[FourLaws.makeItEasy]!.actionSteps,
+          identityShifts: lawGuideData[FourLaws.makeItEasy]!.identityShifts,
         ),
         const SizedBox(height: AppConstants.paddingLarge),
         _buildLawSection(
@@ -124,8 +83,9 @@ class HabitLawsFields extends StatelessWidget {
           examples: showExamples
               ? FourLawsExamples.rewardExamples.take(3).toList()
               : [],
-          actionSteps: _lawActionSteps[FourLaws.makeItSatisfying]!,
-          identityShifts: _lawIdentityShifts[FourLaws.makeItSatisfying]!,
+          actionSteps: lawGuideData[FourLaws.makeItSatisfying]!.actionSteps,
+          identityShifts:
+              lawGuideData[FourLaws.makeItSatisfying]!.identityShifts,
         ),
       ],
     );

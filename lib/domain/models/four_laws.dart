@@ -70,6 +70,91 @@ Stratégies clés :
   };
 }
 
+class FourLawGuideData {
+  final String subtitle;
+  final List<String> playbook;
+  final List<String> actionSteps;
+  final List<String> identityShifts;
+
+  const FourLawGuideData({
+    required this.subtitle,
+    required this.playbook,
+    required this.actionSteps,
+    required this.identityShifts,
+  });
+}
+
+const Map<String, FourLawGuideData> lawGuideData = {
+  FourLaws.makeItObvious: FourLawGuideData(
+    subtitle: FourLaws.makeItObviousDescription,
+    playbook: [
+      'Rédige ton intention d\'implémentation : "Je vais [COMPORTEMENT] à [HEURE] dans [LIEU]".',
+      'Empile la nouvelle habitude sur une routine déjà automatique pour que le signal soit impossible à manquer.',
+      'Conçois ton environnement : laisse les indices en évidence et retire tout ce qui brouille le message.',
+    ],
+    actionSteps: [
+      'Rédige ton intention d\'implémentation (quoi, quand, où).',
+      'Empile cette habitude sur une routine déjà automatique.',
+      'Optimise l\'environnement : rends le signal visible et frictionless.',
+    ],
+    identityShifts: [
+      'Je suis l\'architecte de mon environnement, pas sa victime.',
+      'Je rends les bons signaux impossible à ignorer.',
+    ],
+  ),
+  FourLaws.makeItAttractive: FourLawGuideData(
+    subtitle: FourLaws.makeItAttractiveDescription,
+    playbook: [
+      'Associe la routine à un plaisir immédiat (temptation bundling) pour créer de la dopamine anticipée.',
+      'Rejoins une culture où le comportement que tu veux incarner est la norme.',
+      'Reformule ton discours interne : transforme "je dois" en "je choisis de voter pour mon identité".',
+    ],
+    actionSteps: [
+      'Associe la routine à un plaisir immédiat (temptation bundling).',
+      'Rejoins une communauté qui valorise ce comportement.',
+      'Reformule mentalement : transforme "je dois" en "je vote pour mon identité".',
+    ],
+    identityShifts: [
+      'Je rends mes routines irrésistibles.',
+      'Je choisis des communautés qui tirent le meilleur de moi.',
+    ],
+  ),
+  FourLaws.makeItEasy: FourLawGuideData(
+    subtitle: FourLaws.makeItEasyDescription,
+    playbook: [
+      'Applique la règle des 2 minutes : réduis chaque habitude à la version la plus simple.',
+      'Supprime la friction en préparant le matériel, l\'environnement et les décisions à l\'avance.',
+      'Automatise (rappels, débits automatiques) pour que la bonne action devienne le chemin du moindre effort.',
+    ],
+    actionSteps: [
+      'Applique la règle des 2 minutes pour garantir le démarrage.',
+      'Prépare ton matériel la veille afin de réduire la friction.',
+      'Automatise ou planifie un rappel pour rendre l\'action inévitable.',
+    ],
+    identityShifts: [
+      'Je suis quelqu\'un qui se présente chaque jour, même 2 minutes.',
+      'Je simplifie avant d\'optimiser.',
+    ],
+  ),
+  FourLaws.makeItSatisfying: FourLawGuideData(
+    subtitle: FourLaws.makeItSatisfyingDescription,
+    playbook: [
+      'Crée une récompense immédiate (contrat avec toi-même, transfert vers un compte plaisir, célébration).',
+      'Suis tes progrès visuellement (effet "ne brisez pas la chaîne") pour rendre la déviation coûteuse.',
+      'Cherche de la responsabilité (partenaire, contrat d\'habitudes) pour rendre la déviation coûteuse.',
+    ],
+    actionSteps: [
+      'Prévois une récompense instantanée après l\'habitude.',
+      'Suis ta progression (ne brise pas la chaîne).',
+      'Cherche un partenaire ou un contrat d\'habitudes pour la responsabilité.',
+    ],
+    identityShifts: [
+      'Je célèbre chaque vote pour mon futur moi.',
+      'Je protège ma chaîne de progression : jamais deux jours manqués.',
+    ],
+  ),
+};
+
 class FourLawsExamples {
   // Law 1: Make it Obvious
   static const List<String> cueExamples = [

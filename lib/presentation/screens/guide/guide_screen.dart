@@ -136,63 +136,47 @@ class _GuideScreenState extends ConsumerState<GuideScreen>
     return [
       _LawGuideContent(
         title: FourLaws.makeItObvious,
-        subtitle: FourLaws.makeItObviousDescription,
+        subtitle: lawGuideData[FourLaws.makeItObvious]!.subtitle,
         explanation: FourLaws.detailedExplanations[FourLaws.makeItObvious]!,
         icon: Icons.visibility,
         color: AppColors.primary,
-        playbook: [
-          'Rédige ton intention d’implémentation : “Je vais [COMPORTEMENT] à [HEURE] dans [LIEU]”.',
-          'Empile la nouvelle habitude sur une routine déjà automatique pour que le signal soit impossible à manquer.',
-          'Conçois ton environnement : laisse les indices en évidence et retire tout ce qui brouille le message.',
-        ],
+        playbook: lawGuideData[FourLaws.makeItObvious]!.playbook,
         examples: FourLawsExamples.cueExamples,
         identityShift:
-            'Identité : “Je suis l’architecte de mon environnement, pas sa victime.”',
+            'Identité :\n• ${lawGuideData[FourLaws.makeItObvious]!.identityShifts.join('\n• ')}',
       ),
       _LawGuideContent(
         title: FourLaws.makeItAttractive,
-        subtitle: FourLaws.makeItAttractiveDescription,
+        subtitle: lawGuideData[FourLaws.makeItAttractive]!.subtitle,
         explanation: FourLaws.detailedExplanations[FourLaws.makeItAttractive]!,
         icon: Icons.favorite,
         color: AppColors.accent,
-        playbook: [
-          'Associe la routine à un plaisir immédiat (temptation bundling) pour créer de la dopamine anticipée.',
-          'Rejoins une culture où le comportement que tu veux incarner est la norme.',
-          'Reformule ton discours interne : transforme “je dois” en “je choisis de voter pour mon identité”.',
-        ],
+        playbook: lawGuideData[FourLaws.makeItAttractive]!.playbook,
         examples: FourLawsExamples.cravingExamples,
         identityShift:
-            'Identité : “Je suis quelqu’un qui rend ses routines irrésistibles.”',
+            'Identité :\n• ${lawGuideData[FourLaws.makeItAttractive]!.identityShifts.join('\n• ')}',
       ),
       _LawGuideContent(
         title: FourLaws.makeItEasy,
-        subtitle: FourLaws.makeItEasyDescription,
+        subtitle: lawGuideData[FourLaws.makeItEasy]!.subtitle,
         explanation: FourLaws.detailedExplanations[FourLaws.makeItEasy]!,
         icon: Icons.speed,
         color: AppColors.secondary,
-        playbook: [
-          'Applique la règle des 2 minutes : réduis chaque habitude à la version la plus simple.',
-          'Supprime la friction en préparant le matériel, l’environnement et les décisions à l’avance.',
-          'Automatise (rappels, débits automatiques) pour que la bonne action devienne le chemin du moindre effort.',
-        ],
+        playbook: lawGuideData[FourLaws.makeItEasy]!.playbook,
         examples: FourLawsExamples.responseExamples,
         identityShift:
-            'Identité : “Je suis quelqu’un qui se présente chaque jour, même pour une version minuscule.”',
+            'Identité :\n• ${lawGuideData[FourLaws.makeItEasy]!.identityShifts.join('\n• ')}',
       ),
       _LawGuideContent(
         title: FourLaws.makeItSatisfying,
-        subtitle: FourLaws.makeItSatisfyingDescription,
+        subtitle: lawGuideData[FourLaws.makeItSatisfying]!.subtitle,
         explanation: FourLaws.detailedExplanations[FourLaws.makeItSatisfying]!,
         icon: Icons.star,
         color: AppColors.success,
-        playbook: [
-          'Crée une récompense immédiate (contrat avec toi-même, transfert vers un compte plaisir, célébration).',
-          'Suis tes progrès visuellement : ne brise pas la chaîne et ne manque jamais deux fois.',
-          'Cherche de la responsabilité (partenaire, contrat d’habitudes) pour rendre la déviation coûteuse.',
-        ],
+        playbook: lawGuideData[FourLaws.makeItSatisfying]!.playbook,
         examples: FourLawsExamples.rewardExamples,
         identityShift:
-            'Identité : “Je suis quelqu’un qui célèbre chaque vote pour mon futur moi.”',
+            'Identité :\n• ${lawGuideData[FourLaws.makeItSatisfying]!.identityShifts.join('\n• ')}',
       ),
     ];
   }

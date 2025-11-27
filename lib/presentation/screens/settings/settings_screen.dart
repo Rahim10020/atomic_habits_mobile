@@ -165,9 +165,10 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _showLoadSampleDataDialog(BuildContext context, WidgetRef ref) {
+    final parentContext = context;
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text('Charger les exemples'),
         content: const Text(
           'Voulez-vous ajouter 8 habitudes de démonstration à votre liste ? '
@@ -180,15 +181,18 @@ class SettingsScreen extends ConsumerWidget {
           ),
           TextButton(
             onPressed: () async {
-              Navigator.pop(context);
-              final messenger = ScaffoldMessenger.of(context);
+              Navigator.pop(dialogContext);
+              if (!parentContext.mounted) return;
+
+              final messenger = ScaffoldMessenger.of(parentContext);
               try {
                 final dataManager = ref.read(dataManagerProvider.notifier);
                 await dataManager.loadSampleData();
                 ref
                   ..invalidate(habitsProvider)
                   ..invalidate(dashboardStatsProvider)
-                  ..invalidate(completionTrendProvider(7));
+                  ..invalidate(completionTrendProvider(7))
+                  ..invalidate(completionTrendProvider(30));
                 messenger.showSnackBar(
                   SnackBar(
                     content: const Text('Habitudes d\'exemple chargées !'),

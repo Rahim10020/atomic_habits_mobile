@@ -6,6 +6,7 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
 import '../../../application/providers/habit_provider.dart';
+import '../../widgets/common/empty_state_widget.dart';
 import '../../widgets/common/habit_card.dart';
 import 'widgets/daily_summary.dart';
 import 'package:intl/intl.dart';
@@ -131,39 +132,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               data: (habits) {
                 if (habits.isEmpty) {
                   return SliverFillRemaining(
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.auto_awesome_rounded,
-                            size: 64,
-                            color: AppColors.textSecondaryLight.withValues(
-                              alpha: 0.5,
-                            ),
-                          ),
-                          const SizedBox(height: AppConstants.paddingMedium),
-                          Text(
-                            'Aucune habitude',
-                            style: AppTextStyles.headlineSmall.copyWith(
-                              color: AppColors.textSecondaryLight,
-                            ),
-                          ),
-                          const SizedBox(height: AppConstants.paddingSmall),
-                          Text(
-                            'Commencez par créer votre première habitude',
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.textSecondaryLight,
-                            ),
-                          ),
-                          const SizedBox(height: AppConstants.paddingLarge),
-                          ElevatedButton.icon(
-                            onPressed: () => context.push('/create-habit'),
-                            icon: const Icon(Icons.add),
-                            label: const Text('Créer une habitude'),
-                          ),
-                        ],
-                      ),
+                    child: EmptyStateWidget(
+                      icon: Icons.auto_awesome_rounded,
+                      title: 'Aucune habitude',
+                      message: 'Commencez par créer votre première habitude',
+                      actionLabel: 'Créer une habitude',
+                      onAction: () => context.push('/create-habit'),
                     ),
                   );
                 }
