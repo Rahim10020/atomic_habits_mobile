@@ -70,6 +70,7 @@ dependencies:
   flutter_native_timezone: ^2.0.0
   flutter_localizations:
     sdk: flutter
+  file_picker: ^10.3.7
 
 dev_dependencies:
   flutter_test:

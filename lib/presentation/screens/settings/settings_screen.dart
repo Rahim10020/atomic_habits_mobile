@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:atomic_habits_mobile/application/providers/habit_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:file_picker/file_picker.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
@@ -67,9 +70,29 @@ class SettingsScreen extends ConsumerWidget {
             title: const Text('Importer un backup'),
             subtitle: const Text('Restaurer depuis un fichier JSON'),
             onTap: () async {
+              final result = await FilePicker.platform.pickFiles(
+                type: FileType.custom,
+                allowedExtensions: ['json'],
+              );
+              if (result == null || result.files.single.path == null) return;
+
               final repository = ref.read(habitRepositoryProvider);
               final backupService = BackupService(repository);
-              // TODO: brancher un sélecteur de fichier puis backupService.importFromFile(...)
+              final imported = await backupService.importFromFile(
+                File(result.files.single.path!),
+              );
+
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('$imported habitudes importées'),
+                    backgroundColor: AppColors.success,
+                  ),
+                );
+                ref
+                  ..invalidate(habitsProvider)
+                  ..invalidate(dashboardStatsProvider);
+              }
             },
           ),
           ListTile(
