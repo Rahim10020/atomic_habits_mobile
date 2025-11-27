@@ -14,7 +14,7 @@ class DailySummary extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppConstants.paddingLarge),
       decoration: BoxDecoration(
-        color: AppColors.surfaceLight,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(AppConstants.borderRadius),
         boxShadow: [
           BoxShadow(
@@ -44,7 +44,9 @@ class DailySummary extends StatelessWidget {
                   ? stats.completedCount / stats.totalHabits
                   : 0,
               minHeight: 12,
-              backgroundColor: AppColors.borderLight,
+              backgroundColor: Theme.of(
+                context,
+              ).colorScheme.surfaceContainerHighest,
               valueColor: AlwaysStoppedAnimation<Color>(
                 _getProgressColor(stats.completionRate),
               ),
