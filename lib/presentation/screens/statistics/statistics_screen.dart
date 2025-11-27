@@ -54,7 +54,18 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
             },
             itemBuilder: (context) => _periods
                 .map(
-                  (period) => PopupMenuItem(value: period, child: Text(period)),
+                  (period) => CheckedPopupMenuItem<String>(
+                    value: period,
+                    checked: period == _selectedPeriod,
+                    child: Text(
+                      period,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: period == _selectedPeriod
+                            ? AppColors.primary
+                            : Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
                 )
                 .toList(),
           ),
