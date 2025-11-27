@@ -123,23 +123,28 @@ class _HabitCardState extends ConsumerState<HabitCard> {
                           const SizedBox(height: 8),
 
                           // Category and streak
-                          Row(
-                            children: [
-                              _buildChip(
-                                icon: Icons.category_rounded,
-                                label: widget.habit.category,
-                                color: categoryColor,
-                              ),
-                              const SizedBox(width: 8),
-                              if (widget.habit.currentStreak > 0)
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
                                 _buildChip(
-                                  icon: Icons.local_fire_department_rounded,
-                                  label: '${widget.habit.currentStreak} jours',
-                                  color: AppColors.getStreakColor(
-                                    widget.habit.currentStreak,
-                                  ),
+                                  icon: Icons.category_rounded,
+                                  label: widget.habit.category,
+                                  color: categoryColor,
                                 ),
-                            ],
+                                const SizedBox(width: 8),
+                                if (widget.habit.currentStreak > 0)
+                                  _buildChip(
+                                    icon: Icons.local_fire_department_rounded,
+                                    label:
+                                        '${widget.habit.currentStreak} jours',
+                                    color: AppColors.getStreakColor(
+                                      widget.habit.currentStreak,
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
