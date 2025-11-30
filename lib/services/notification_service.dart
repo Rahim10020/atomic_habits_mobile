@@ -23,7 +23,8 @@ class NotificationService {
 
     try {
       initializeTimeZones();
-      final timeZoneName = await FlutterTimezone.getLocalTimezone();
+      final timeZoneName = (await FlutterTimezone.getLocalTimezone())
+          .toString();
       tz.setLocalLocation(tz.getLocation(timeZoneName));
     } catch (e, stackTrace) {
       throw NotificationException(
