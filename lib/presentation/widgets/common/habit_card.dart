@@ -201,7 +201,7 @@ class _HabitCardState extends ConsumerState<HabitCard> {
     if (_isAnimating) return;
 
     // Ajout d'un feedback haptique
-    final hasVibrator = await Vibration.hasVibrator() ?? false;
+    final hasVibrator = await Vibration.hasVibrator();
     if (hasVibrator) {
       if (!isCompleted) {
         Vibration.vibrate(duration: 50); // Complétion
