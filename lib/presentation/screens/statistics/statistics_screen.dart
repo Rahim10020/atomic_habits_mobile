@@ -37,8 +37,9 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
   Widget build(BuildContext context) {
     final habitsAsync = ref.watch(habitsProvider);
     final statsAsync = ref.watch(dashboardStatsProvider);
+    final periodDays = _periodToDays(_selectedPeriod);
     final completionsAsync = ref.watch(
-      completionTrendProvider(_periodToDays(_selectedPeriod)),
+      completionTrendProvider(periodDays),
     );
 
     return Scaffold(
@@ -73,12 +74,18 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
+          final periodDays = _periodToDays(_selectedPeriod);
+          
+          // Invalider tous les providers pour forcer le rafraîchissement
+          ref.invalidate(habitsProvider);
+          ref.invalidate(dashboardStatsProvider);
+          ref.invalidate(completionTrendProvider(periodDays));
+          
+          // Attendre que les données soient rechargées
           await Future.wait([
-            ref.refresh(habitsProvider.future),
-            ref.refresh(dashboardStatsProvider.future),
-            ref.refresh(
-              completionTrendProvider(_periodToDays(_selectedPeriod)).future,
-            ),
+            ref.read(habitsProvider.future),
+            ref.read(dashboardStatsProvider.future),
+            ref.read(completionTrendProvider(periodDays).future),
           ]);
         },
         child: SingleChildScrollView(

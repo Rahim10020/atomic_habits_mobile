@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:atomic_habits_mobile/domain/repositories/habit_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/utils/sample_data.dart';
+import '../../services/notification_service.dart';
 import 'habit_provider.dart';
 
 // Provider pour vérifier si c'est le premier lancement
@@ -57,6 +59,15 @@ class DataManager extends StateNotifier<AsyncValue<void>> {
   }
 
   Future<void> clearAllData() async {
+    // Annuler toutes les notifications avant de supprimer les données
+    try {
+      final notificationService = NotificationService();
+      await notificationService.cancelAll();
+    } catch (e) {
+      // Log l'erreur mais continue la suppression
+      debugPrint('Erreur lors de l\'annulation des notifications: $e');
+    }
+
     await _repository.deleteAllHabits();
     await _repository.deleteAllHabitLogs();
 

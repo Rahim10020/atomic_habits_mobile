@@ -7,6 +7,7 @@ import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
 import '../../../application/providers/data_manager_provider.dart';
 import '../../../application/providers/theme_mode_provider.dart';
+import '../../widgets/common/custom_snackbar.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -185,18 +186,14 @@ class SettingsScreen extends ConsumerWidget {
                   ..invalidate(dashboardStatsProvider)
                   ..invalidate(completionTrendProvider(7))
                   ..invalidate(completionTrendProvider(30));
-                messenger.showSnackBar(
-                  SnackBar(
-                    content: const Text('Habitudes d\'exemple chargées !'),
-                    backgroundColor: AppColors.success,
-                  ),
+                CustomSnackBar.showSuccess(
+                  parentContext,
+                  'Habitudes d\'exemple chargées !',
                 );
               } catch (error) {
-                messenger.showSnackBar(
-                  SnackBar(
-                    content: Text('Échec du chargement : $error'),
-                    backgroundColor: AppColors.error,
-                  ),
+                CustomSnackBar.showError(
+                  parentContext,
+                  'Échec du chargement : $error',
                 );
               }
             },
@@ -246,25 +243,17 @@ class SettingsScreen extends ConsumerWidget {
 
                 if (context.mounted) {
                   Navigator.pop(context); // Fermer le loading
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('Données réinitialisées!'),
-                      backgroundColor: AppColors.success,
-                      behavior: SnackBarBehavior.floating,
-                    ),
+                  CustomSnackBar.showSuccess(
+                    context,
+                    'Données réinitialisées!',
                   );
                 }
               } catch (error) {
                 if (context.mounted) {
                   Navigator.pop(context); // Fermer le loading
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Erreur lors de la réinitialisation: $error',
-                      ),
-                      backgroundColor: AppColors.error,
-                      behavior: SnackBarBehavior.floating,
-                    ),
+                  CustomSnackBar.showError(
+                    context,
+                    'Erreur lors de la réinitialisation: $error',
                   );
                 }
               }
@@ -317,25 +306,17 @@ class SettingsScreen extends ConsumerWidget {
 
                 if (context.mounted) {
                   Navigator.pop(context); // Fermer le loading
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text(
-                        'Toutes les données ont été supprimées',
-                      ),
-                      backgroundColor: AppColors.error,
-                      behavior: SnackBarBehavior.floating,
-                    ),
+                  CustomSnackBar.showInfo(
+                    context,
+                    'Toutes les données ont été supprimées',
                   );
                 }
               } catch (error) {
                 if (context.mounted) {
                   Navigator.pop(context); // Fermer le loading
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Erreur lors de la suppression: $error'),
-                      backgroundColor: AppColors.error,
-                      behavior: SnackBarBehavior.floating,
-                    ),
+                  CustomSnackBar.showError(
+                    context,
+                    'Erreur lors de la suppression: $error',
                   );
                 }
               }

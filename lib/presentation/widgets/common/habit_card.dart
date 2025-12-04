@@ -9,6 +9,7 @@ import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
 import '../../../domain/models/habit.dart';
 import '../../../application/providers/habit_provider.dart';
+import 'custom_snackbar.dart';
 
 class HabitCard extends ConsumerStatefulWidget {
   final Habit habit;
@@ -250,13 +251,10 @@ class _HabitCardState extends ConsumerState<HabitCard> {
     if (AppConstants.milestones.contains(habit.currentStreak)) {
       final message = AppConstants.milestoneMessages[habit.currentStreak];
       if (message != null && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(message),
-            backgroundColor: AppColors.success,
-            duration: const Duration(seconds: 3),
-            behavior: SnackBarBehavior.floating,
-          ),
+        CustomSnackBar.showSuccess(
+          context,
+          message,
+          duration: const Duration(seconds: 3),
         );
 
         // Notification de milestone

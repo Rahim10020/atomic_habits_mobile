@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:collection/collection.dart';
 import '../../domain/models/habit.dart';
@@ -5,6 +6,7 @@ import '../../domain/models/habit_log.dart';
 import '../../domain/repositories/habit_repository.dart';
 import '../../infrastructure/database/app_database.dart' as db;
 import '../../infrastructure/repositories/habit_repository_impl.dart';
+import '../../services/notification_service.dart';
 
 // Database Provider
 final databaseProvider = Provider<db.AppDatabase>((ref) {
@@ -111,26 +113,79 @@ final completionTrendProvider = FutureProvider.family<Map<DateTime, int>, int>((
 // Habit Controller for actions
 class HabitController extends StateNotifier<AsyncValue<void>> {
   final HabitRepository _repository;
+  final NotificationService _notificationService = NotificationService();
 
   HabitController(this._repository) : super(const AsyncValue.data(null));
 
   Future<void> createHabit(Habit habit) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      await _repository.createHabit(habit);
+      // Créer l'habitude et récupérer l'ID
+      final habitId = await _repository.createHabit(habit);
+
+      // Planifier la notification si activée
+      if (habit.reminderEnabled && habit.reminderTime != null) {
+        try {
+          await _notificationService.scheduleHabitReminder(
+            habitId: habitId,
+            habitName: habit.name,
+            time: habit.reminderTime!,
+          );
+        } catch (e) {
+          // Log l'erreur mais ne bloque pas la création
+          debugPrint('Erreur lors de la planification de la notification: $e');
+        }
+      }
     });
   }
 
   Future<void> updateHabit(Habit habit) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
+      // Récupérer l'habitude existante pour vérifier les changements
+      final existingHabit = await _repository.getHabitById(habit.id);
+
       await _repository.updateHabit(habit);
+
+      // Gérer les notifications
+      if (existingHabit != null) {
+        // Annuler l'ancienne notification si elle existait
+        if (existingHabit.reminderEnabled) {
+          try {
+            await _notificationService.cancelHabitReminder(habit.id);
+          } catch (e) {
+            debugPrint('Erreur lors de l\'annulation de la notification: $e');
+          }
+        }
+
+        // Planifier une nouvelle notification si activée
+        if (habit.reminderEnabled && habit.reminderTime != null) {
+          try {
+            await _notificationService.scheduleHabitReminder(
+              habitId: habit.id,
+              habitName: habit.name,
+              time: habit.reminderTime!,
+            );
+          } catch (e) {
+            debugPrint(
+              'Erreur lors de la planification de la notification: $e',
+            );
+          }
+        }
+      }
     });
   }
 
   Future<void> deleteHabit(int id) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
+      // Annuler la notification avant de supprimer
+      try {
+        await _notificationService.cancelHabitReminder(id);
+      } catch (e) {
+        debugPrint('Erreur lors de l\'annulation de la notification: $e');
+      }
+
       await _repository.deleteHabit(id);
     });
   }

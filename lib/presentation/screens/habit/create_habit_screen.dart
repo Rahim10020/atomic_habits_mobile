@@ -10,6 +10,7 @@ import '../../../application/providers/habit_provider.dart';
 import '../../../application/providers/habit_templates_provider.dart';
 import '../../../core/utils/habit_templates.dart';
 import '../../widgets/common/habit_laws_fields.dart';
+import '../../widgets/common/custom_snackbar.dart';
 
 class CreateHabitScreen extends ConsumerStatefulWidget {
   const CreateHabitScreen({super.key});
@@ -618,13 +619,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
     ref.invalidate(habitsProvider);
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Habitude créée avec succès!'),
-          backgroundColor: AppColors.success,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      CustomSnackBar.showSuccess(context, 'Habitude créée avec succès!');
       context.pop();
     }
   }

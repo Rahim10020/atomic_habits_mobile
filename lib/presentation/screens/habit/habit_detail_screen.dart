@@ -7,6 +7,7 @@ import '../../../core/constants/text_styles.dart';
 import '../../../application/providers/habit_provider.dart';
 import '../../../domain/models/habit.dart';
 import '../../widgets/common/habit_calendar.dart';
+import '../../widgets/common/custom_snackbar.dart';
 
 class HabitDetailScreen extends ConsumerWidget {
   final int habitId;
@@ -422,11 +423,9 @@ class HabitDetailScreen extends ConsumerWidget {
                 // Handle any unexpected errors
                 if (parentContext.mounted) {
                   Navigator.pop(dialogContext);
-                  ScaffoldMessenger.of(parentContext).showSnackBar(
-                    SnackBar(
-                      content: Text('Erreur lors de la suppression: $error'),
-                      backgroundColor: AppColors.error,
-                    ),
+                  CustomSnackBar.showError(
+                    parentContext,
+                    'Erreur lors de la suppression: $error',
                   );
                 }
               }

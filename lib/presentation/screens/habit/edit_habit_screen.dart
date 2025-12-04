@@ -7,6 +7,7 @@ import '../../../core/constants/text_styles.dart';
 import '../../../domain/models/habit.dart';
 import '../../../application/providers/habit_provider.dart';
 import '../../widgets/common/habit_laws_fields.dart';
+import '../../widgets/common/custom_snackbar.dart';
 
 class EditHabitScreen extends ConsumerStatefulWidget {
   final int habitId;
@@ -389,13 +390,7 @@ class _EditHabitScreenState extends ConsumerState<EditHabitScreen> {
     ref.invalidate(habitsProvider);
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Habitude modifiée avec succès!'),
-          backgroundColor: AppColors.success,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      CustomSnackBar.showSuccess(context, 'Habitude modifiée avec succès!');
       context.pop();
     }
   }
