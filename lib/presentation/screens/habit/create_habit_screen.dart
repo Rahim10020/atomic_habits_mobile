@@ -156,12 +156,6 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
         return Card(
           margin: const EdgeInsets.only(bottom: AppConstants.paddingSmall),
           elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-            side: BorderSide(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-            ),
-          ),
           child: ExpansionTile(
             leading: Container(
               width: 12,

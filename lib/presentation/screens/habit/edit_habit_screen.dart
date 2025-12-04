@@ -99,14 +99,24 @@ class _EditHabitScreenState extends ConsumerState<EditHabitScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Modifier l\'habitude')),
+        appBar: AppBar(
+          title: const Text(
+            'Modifier l\'habitude',
+            style: AppTextStyles.headlineSmall,
+          ),
+        ),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     if (_originalHabit == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Modifier l\'habitude')),
+        appBar: AppBar(
+          title: const Text(
+            'Modifier l\'habitude',
+            style: AppTextStyles.headlineSmall,
+          ),
+        ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
