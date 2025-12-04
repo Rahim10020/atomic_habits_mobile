@@ -38,9 +38,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
     final habitsAsync = ref.watch(habitsProvider);
     final statsAsync = ref.watch(dashboardStatsProvider);
     final periodDays = _periodToDays(_selectedPeriod);
-    final completionsAsync = ref.watch(
-      completionTrendProvider(periodDays),
-    );
+    final completionsAsync = ref.watch(completionTrendProvider(periodDays));
 
     return Scaffold(
       appBar: AppBar(
@@ -75,17 +73,12 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
       body: RefreshIndicator(
         onRefresh: () async {
           final periodDays = _periodToDays(_selectedPeriod);
-          
-          // Invalider tous les providers pour forcer le rafraîchissement
-          ref.invalidate(habitsProvider);
-          ref.invalidate(dashboardStatsProvider);
-          ref.invalidate(completionTrendProvider(periodDays));
-          
-          // Attendre que les données soient rechargées
+
+          // Rafraîchir tous les providers et attendre que les données soient rechargées
           await Future.wait([
-            ref.read(habitsProvider.future),
-            ref.read(dashboardStatsProvider.future),
-            ref.read(completionTrendProvider(periodDays).future),
+            ref.refresh(habitsProvider.future),
+            ref.refresh(dashboardStatsProvider.future),
+            ref.refresh(completionTrendProvider(periodDays).future),
           ]);
         },
         child: SingleChildScrollView(
