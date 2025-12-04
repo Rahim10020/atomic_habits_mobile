@@ -186,7 +186,7 @@ class _EditHabitScreenState extends ConsumerState<EditHabitScreen> {
         ),
         const SizedBox(height: AppConstants.paddingMedium),
         DropdownButtonFormField<String>(
-          value: _selectedCategory,
+          initialValue: _selectedCategory,
           decoration: const InputDecoration(
             labelText: 'Catégorie',
             prefixIcon: Icon(Icons.category),
@@ -218,7 +218,7 @@ class _EditHabitScreenState extends ConsumerState<EditHabitScreen> {
         ),
         const SizedBox(height: AppConstants.paddingMedium),
         DropdownButtonFormField<String>(
-          value: _selectedFrequency,
+          initialValue: _selectedFrequency,
           decoration: const InputDecoration(
             labelText: 'Fréquence',
             prefixIcon: Icon(Icons.calendar_today),
