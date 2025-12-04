@@ -1,16 +1,12 @@
-import 'dart:io';
-
 import 'package:atomic_habits_mobile/application/providers/habit_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:file_picker/file_picker.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
 import '../../../application/providers/data_manager_provider.dart';
 import '../../../application/providers/theme_mode_provider.dart';
-import '../../../services/backup_service.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -50,51 +46,7 @@ class SettingsScreen extends ConsumerWidget {
             subtitle: const Text('Ajouter 8 habitudes de démonstration'),
             onTap: () => _showLoadSampleDataDialog(context, ref),
           ),
-          ListTile(
-            leading: const Icon(Icons.save_alt),
-            title: const Text('Exporter les habitudes'),
-            subtitle: const Text('Sauvegarder un fichier JSON'),
-            onTap: () async {
-              final repository = ref.read(habitRepositoryProvider);
-              final backupService = BackupService(repository);
-              final file = await backupService.exportToFile();
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Backup créé : ${file.path}')),
-                );
-              }
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.upload),
-            title: const Text('Importer un backup'),
-            subtitle: const Text('Restaurer depuis un fichier JSON'),
-            onTap: () async {
-              final result = await FilePicker.platform.pickFiles(
-                type: FileType.custom,
-                allowedExtensions: ['json'],
-              );
-              if (result == null || result.files.single.path == null) return;
 
-              final repository = ref.read(habitRepositoryProvider);
-              final backupService = BackupService(repository);
-              final imported = await backupService.importFromFile(
-                File(result.files.single.path!),
-              );
-
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('$imported habitudes importées'),
-                    backgroundColor: AppColors.success,
-                  ),
-                );
-                ref
-                  ..invalidate(habitsProvider)
-                  ..invalidate(dashboardStatsProvider);
-              }
-            },
-          ),
           ListTile(
             leading: const Icon(Icons.refresh),
             title: const Text('Réinitialiser avec les exemples'),
