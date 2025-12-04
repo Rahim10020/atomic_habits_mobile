@@ -21,7 +21,10 @@ class HabitDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Détails de l\'habitude'),
+        title: const Text(
+          'Détails de l\'habitude',
+          style: AppTextStyles.headlineSmall,
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
