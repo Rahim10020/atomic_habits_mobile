@@ -92,7 +92,6 @@ class SettingsScreen extends ConsumerWidget {
                 color: AppColors.textSecondaryLight,
                 fontStyle: FontStyle.italic,
               ),
-              textAlign: TextAlign.center,
             ),
           ),
         ],
