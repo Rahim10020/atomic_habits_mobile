@@ -3,7 +3,7 @@ import 'package:atomic_habits_mobile/core/constants/dimensions.dart';
 class AppConstants {
   // App Info
   static const String appName = 'Atomic Habits';
-  static const String appVersion = '1.0.0';
+  static const String appVersion = '2.0.2';
 
   // Database
   static const String databaseName = 'atomic_habits.db';
