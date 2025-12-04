@@ -206,13 +206,6 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
 
     return Container(
       padding: const EdgeInsets.all(AppConstants.paddingLarge),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        ),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -286,13 +279,6 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
 
     return Container(
       padding: const EdgeInsets.all(AppConstants.paddingLarge),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        ),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -417,13 +403,6 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
 
     return Container(
       padding: const EdgeInsets.all(AppConstants.paddingLarge),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        ),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -534,13 +513,6 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
     final days = completions.keys.toList()..sort();
     return Container(
       padding: const EdgeInsets.all(AppConstants.paddingLarge),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        ),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
