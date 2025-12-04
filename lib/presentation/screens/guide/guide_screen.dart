@@ -4,8 +4,7 @@ import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
 import '../../../domain/models/four_laws.dart';
 import 'widgets/concept_bottom_sheet.dart';
-import 'widgets/law_explanation_card.dart';
-import 'widgets/principle_card.dart';
+import 'widgets/custom_accordion.dart';
 
 class GuideScreen extends StatefulWidget {
   const GuideScreen({super.key});
@@ -60,45 +59,158 @@ class _GuideScreenState extends State<GuideScreen>
   }
 
   Widget _buildFourLawsTab() {
-    return ListView.separated(
+    return ListView.builder(
       key: const PageStorageKey('guide_laws_tab'),
       padding: const EdgeInsets.all(AppConstants.paddingMedium),
       itemCount: _lawGuideContent.length,
-      separatorBuilder: (_, __) =>
-          const SizedBox(height: AppConstants.paddingMedium),
       itemBuilder: (context, index) {
         final law = _lawGuideContent[index];
-        return LawExplanationCard(
+        return CustomAccordion(
           title: law.title,
           subtitle: law.subtitle,
-          explanation: law.explanation,
-          playbook: law.playbook,
-          examples: law.examples,
-          identityShift: law.identityShift,
           icon: law.icon,
           color: law.color,
+          initiallyExpanded: index == 0,
+          content: _buildLawContent(law),
         );
       },
     );
   }
 
+  Widget _buildLawContent(_LawGuideContent law) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(AppConstants.paddingMedium),
+          decoration: BoxDecoration(
+            color: law.color.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(law.explanation.trim(), style: AppTextStyles.bodyMedium),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'Playbook 1%',
+          style: AppTextStyles.titleSmall.copyWith(color: law.color),
+        ),
+        const SizedBox(height: 8),
+        ...law.playbook.map(
+          (item) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.check_circle, size: 20, color: law.color),
+                const SizedBox(width: 12),
+                Expanded(child: Text(item, style: AppTextStyles.bodySmall)),
+              ],
+            ),
+          ),
+        ),
+        const Divider(height: 24),
+        Text(
+          'Exemples concrets',
+          style: AppTextStyles.labelLarge.copyWith(color: law.color),
+        ),
+        const SizedBox(height: 8),
+        ...law.examples
+            .take(3)
+            .map(
+              (example) => Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.arrow_right, size: 18, color: law.color),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(example, style: AppTextStyles.bodySmall),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        const SizedBox(height: 16),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(AppConstants.paddingMedium),
+          decoration: BoxDecoration(
+            color: law.color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: law.color.withValues(alpha: 0.3),
+              width: 1,
+            ),
+          ),
+          child: Text(
+            law.identityShift,
+            style: AppTextStyles.bodyMedium.copyWith(
+              fontStyle: FontStyle.italic,
+              color: law.color,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildPrinciplesTab() {
-    return ListView.separated(
+    return ListView.builder(
       key: const PageStorageKey('guide_principles_tab'),
       padding: const EdgeInsets.all(AppConstants.paddingMedium),
       itemCount: _principleGuideContent.length,
-      separatorBuilder: (_, __) =>
-          const SizedBox(height: AppConstants.paddingMedium),
       itemBuilder: (context, index) {
         final principle = _principleGuideContent[index];
-        return PrincipleCard(
+        return CustomAccordion(
           title: principle.title,
-          description: principle.description,
-          actionTips: principle.actionTips,
           icon: principle.icon,
           color: principle.color,
+          initiallyExpanded: index == 0,
+          content: _buildPrincipleContent(principle),
         );
       },
+    );
+  }
+
+  Widget _buildPrincipleContent(_PrincipleGuideContent principle) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(AppConstants.paddingMedium),
+          decoration: BoxDecoration(
+            color: principle.color.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(principle.description, style: AppTextStyles.bodyMedium),
+        ),
+        if (principle.actionTips.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          Text(
+            'Passer à l'
+            'action',
+            style: AppTextStyles.labelLarge.copyWith(color: principle.color),
+          ),
+          const SizedBox(height: 8),
+          ...principle.actionTips.map(
+            (tip) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.check_circle, size: 20, color: principle.color),
+                  const SizedBox(width: 12),
+                  Expanded(child: Text(tip, style: AppTextStyles.bodySmall)),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ],
     );
   }
 
