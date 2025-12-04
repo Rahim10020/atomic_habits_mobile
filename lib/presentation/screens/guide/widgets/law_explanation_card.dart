@@ -27,12 +27,7 @@ class LawExplanationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 0,
       margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-        side: BorderSide(color: color.withValues(alpha: 0.2)),
-      ),
       child: Padding(
         padding: const EdgeInsets.all(AppConstants.paddingMedium),
         child: Column(
