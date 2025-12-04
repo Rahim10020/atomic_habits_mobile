@@ -177,37 +177,29 @@ class SettingsScreen extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Choisir un thème'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RadioListTile<ThemeMode>(
-              title: const Text('Clair'),
-              value: ThemeMode.light,
-              groupValue: ref.read(themeModeProvider),
-              onChanged: (value) {
-                ref.read(themeModeProvider.notifier).state = value!;
-                Navigator.pop(context);
-              },
-            ),
-            RadioListTile<ThemeMode>(
-              title: const Text('Sombre'),
-              value: ThemeMode.dark,
-              groupValue: ref.read(themeModeProvider),
-              onChanged: (value) {
-                ref.read(themeModeProvider.notifier).state = value!;
-                Navigator.pop(context);
-              },
-            ),
-            RadioListTile<ThemeMode>(
-              title: const Text('Automatique'),
-              value: ThemeMode.system,
-              groupValue: ref.read(themeModeProvider),
-              onChanged: (value) {
-                ref.read(themeModeProvider.notifier).state = value!;
-                Navigator.pop(context);
-              },
-            ),
-          ],
+        content: RadioGroup<ThemeMode>(
+          groupValue: ref.read(themeModeProvider),
+          onChanged: (value) {
+            ref.read(themeModeProvider.notifier).state = value!;
+            Navigator.pop(context);
+          },
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              RadioListTile<ThemeMode>(
+                title: Text('Clair'),
+                value: ThemeMode.light,
+              ),
+              RadioListTile<ThemeMode>(
+                title: Text('Sombre'),
+                value: ThemeMode.dark,
+              ),
+              RadioListTile<ThemeMode>(
+                title: Text('Automatique'),
+                value: ThemeMode.system,
+              ),
+            ],
+          ),
         ),
       ),
     );
