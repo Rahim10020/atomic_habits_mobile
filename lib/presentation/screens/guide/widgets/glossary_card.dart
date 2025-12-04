@@ -23,9 +23,7 @@ class GlossaryCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: AppConstants.paddingMedium),
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
@@ -34,8 +32,16 @@ class GlossaryCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             gradient: LinearGradient(
               colors: [
-                color.withValues(alpha: 0.08),
-                color.withValues(alpha: 0.03),
+                color.withValues(
+                  alpha: Theme.of(context).brightness == Brightness.dark
+                      ? 0.15
+                      : 0.08,
+                ),
+                color.withValues(
+                  alpha: Theme.of(context).brightness == Brightness.dark
+                      ? 0.08
+                      : 0.03,
+                ),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -54,11 +60,7 @@ class GlossaryCard extends StatelessWidget {
                         color: color.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Icon(
-                        icon,
-                        color: color,
-                        size: 24,
-                      ),
+                      child: Icon(icon, color: color, size: 24),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -81,7 +83,9 @@ class GlossaryCard extends StatelessWidget {
                 Text(
                   description,
                   style: AppTextStyles.bodyMedium.copyWith(
-                    color: Colors.grey[700],
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.7),
                     height: 1.5,
                   ),
                   maxLines: 3,
@@ -102,11 +106,7 @@ class GlossaryCard extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
-                            Icons.info_outline,
-                            size: 14,
-                            color: color,
-                          ),
+                          Icon(Icons.info_outline, size: 14, color: color),
                           const SizedBox(width: 4),
                           Text(
                             'En savoir plus',
@@ -128,4 +128,3 @@ class GlossaryCard extends StatelessWidget {
     );
   }
 }
-

@@ -243,7 +243,9 @@ class _GuideScreenState extends State<GuideScreen>
             color: Theme.of(context).scaffoldBackgroundColor,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.black.withValues(alpha: 0.3)
+                    : Colors.black.withValues(alpha: 0.05),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
@@ -251,17 +253,27 @@ class _GuideScreenState extends State<GuideScreen>
           ),
           child: TextField(
             controller: _glossarySearchController,
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
             decoration: InputDecoration(
               hintText: 'Rechercher un concept...',
+              hintStyle: TextStyle(
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.6),
+              ),
               prefixIcon: Icon(
                 Icons.search,
-                color: AppColors.textSecondaryLight,
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.6),
               ),
               suffixIcon: _glossarySearchQuery.isNotEmpty
                   ? IconButton(
                       icon: Icon(
                         Icons.clear,
-                        color: AppColors.textSecondaryLight,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                       onPressed: () {
                         setState(() {
@@ -272,7 +284,9 @@ class _GuideScreenState extends State<GuideScreen>
                     )
                   : null,
               filled: true,
-              fillColor: Colors.grey[100],
+              fillColor:
+                  Theme.of(context).inputDecorationTheme.fillColor ??
+                  Theme.of(context).colorScheme.surface,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
@@ -296,19 +310,29 @@ class _GuideScreenState extends State<GuideScreen>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
+                      Icon(
+                        Icons.search_off,
+                        size: 64,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.4),
+                      ),
                       const SizedBox(height: 16),
                       Text(
                         'Aucun concept trouvé',
                         style: AppTextStyles.titleMedium.copyWith(
-                          color: Colors.grey[600],
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withValues(alpha: 0.6),
                         ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         'Essayez avec d\'autres mots-clés',
                         style: AppTextStyles.bodySmall.copyWith(
-                          color: Colors.grey[500],
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withValues(alpha: 0.5),
                         ),
                       ),
                     ],
