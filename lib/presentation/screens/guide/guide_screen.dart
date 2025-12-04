@@ -5,6 +5,7 @@ import '../../../core/constants/text_styles.dart';
 import '../../../domain/models/four_laws.dart';
 import 'widgets/concept_bottom_sheet.dart';
 import 'widgets/custom_accordion.dart';
+import 'widgets/glossary_card.dart';
 
 class GuideScreen extends StatefulWidget {
   const GuideScreen({super.key});
@@ -18,6 +19,9 @@ class _GuideScreenState extends State<GuideScreen>
   late TabController _tabController;
   late final List<_LawGuideContent> _lawGuideContent;
   late final List<_PrincipleGuideContent> _principleGuideContent;
+  final TextEditingController _glossarySearchController =
+      TextEditingController();
+  String _glossarySearchQuery = '';
 
   @override
   void initState() {
@@ -30,6 +34,7 @@ class _GuideScreenState extends State<GuideScreen>
   @override
   void dispose() {
     _tabController.dispose();
+    _glossarySearchController.dispose();
     super.dispose();
   }
 
@@ -216,38 +221,159 @@ class _GuideScreenState extends State<GuideScreen>
 
   Widget _buildGlossaryTab(BuildContext context) {
     final entries = AtomicHabitsPrinciples.conceptExplanations.entries.toList();
-    return ListView.builder(
-      key: const PageStorageKey('guide_glossary_tab'),
-      padding: const EdgeInsets.all(AppConstants.paddingMedium),
-      itemCount: entries.length,
-      itemBuilder: (_, index) {
-        final entry = entries[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: AppConstants.paddingMedium),
-          child: ListTile(
-            leading: Icon(Icons.menu_book, color: AppColors.primary),
-            title: Text(entry.key, style: AppTextStyles.titleMedium),
-            subtitle: Text(entry.value, style: AppTextStyles.bodySmall),
-            trailing: IconButton(
-              icon: const Icon(Icons.info_outline),
-              color: AppColors.primary,
-              onPressed: () {
-                showConceptBottomSheet(
-                  context: context,
-                  title: entry.key,
-                  description: entry.value,
-                  color: AppColors.primary,
-                  actionSteps: _glossaryActionSteps(entry.key),
-                  identityShifts: _glossaryIdentityShifts(entry.key),
-                  examples: const [],
-                  ctaLabel: null,
-                );
-              },
-            ),
+    final filteredEntries = entries.where((entry) {
+      if (_glossarySearchQuery.isEmpty) return true;
+      return entry.key.toLowerCase().contains(
+            _glossarySearchQuery.toLowerCase(),
+          ) ||
+          entry.value.toLowerCase().contains(
+            _glossarySearchQuery.toLowerCase(),
+          );
+    }).toList();
+
+    // Mapping des concepts à leurs icônes et couleurs
+    final conceptStyles = _getConceptStyles();
+
+    return Column(
+      children: [
+        // Barre de recherche
+        Container(
+          padding: const EdgeInsets.all(AppConstants.paddingMedium),
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-        );
-      },
+          child: TextField(
+            controller: _glossarySearchController,
+            decoration: InputDecoration(
+              hintText: 'Rechercher un concept...',
+              prefixIcon: Icon(
+                Icons.search,
+                color: AppColors.textSecondaryLight,
+              ),
+              suffixIcon: _glossarySearchQuery.isNotEmpty
+                  ? IconButton(
+                      icon: Icon(
+                        Icons.clear,
+                        color: AppColors.textSecondaryLight,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _glossarySearchController.clear();
+                          _glossarySearchQuery = '';
+                        });
+                      },
+                    )
+                  : null,
+              filled: true,
+              fillColor: Colors.grey[100],
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
+            ),
+            onChanged: (value) {
+              setState(() {
+                _glossarySearchQuery = value;
+              });
+            },
+          ),
+        ),
+        // Liste des concepts
+        Expanded(
+          child: filteredEntries.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Aucun concept trouvé',
+                        style: AppTextStyles.titleMedium.copyWith(
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Essayez avec d\'autres mots-clés',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: Colors.grey[500],
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : ListView.builder(
+                  key: const PageStorageKey('guide_glossary_tab'),
+                  padding: const EdgeInsets.all(AppConstants.paddingMedium),
+                  itemCount: filteredEntries.length,
+                  itemBuilder: (_, index) {
+                    final entry = filteredEntries[index];
+                    final style =
+                        conceptStyles[entry.key] ??
+                        _ConceptStyle(
+                          icon: Icons.menu_book,
+                          color: AppColors.primary,
+                        );
+                    return GlossaryCard(
+                      title: entry.key,
+                      description: entry.value,
+                      icon: style.icon,
+                      color: style.color,
+                      onTap: () {
+                        showConceptBottomSheet(
+                          context: context,
+                          title: entry.key,
+                          description: entry.value,
+                          color: style.color,
+                          actionSteps: _glossaryActionSteps(entry.key),
+                          identityShifts: _glossaryIdentityShifts(entry.key),
+                          examples: const [],
+                          ctaLabel: null,
+                        );
+                      },
+                    );
+                  },
+                ),
+        ),
+      ],
     );
+  }
+
+  Map<String, _ConceptStyle> _getConceptStyles() {
+    return {
+      'Amélioration de 1%': _ConceptStyle(
+        icon: Icons.trending_up,
+        color: AppColors.success,
+      ),
+      'Habitudes basées sur l\'identité': _ConceptStyle(
+        icon: Icons.verified_user,
+        color: AppColors.primary,
+      ),
+      'Les systèmes battent les objectifs': _ConceptStyle(
+        icon: Icons.hub,
+        color: AppColors.info,
+      ),
+      'Règle des 2 minutes': _ConceptStyle(
+        icon: Icons.timer,
+        color: AppColors.accent,
+      ),
+      'Empilement d\'habitudes': _ConceptStyle(
+        icon: Icons.layers,
+        color: AppColors.secondary,
+      ),
+    };
   }
 
   List<_LawGuideContent> _buildLawGuideContent() {
@@ -495,4 +621,11 @@ class _PrincipleGuideContent {
     required this.icon,
     required this.color,
   });
+}
+
+class _ConceptStyle {
+  final IconData icon;
+  final Color color;
+
+  const _ConceptStyle({required this.icon, required this.color});
 }
