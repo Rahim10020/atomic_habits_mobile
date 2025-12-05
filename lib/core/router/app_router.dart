@@ -23,14 +23,14 @@ class AppRouter {
 
   static GoRouter router(WidgetRef ref) {
     return GoRouter(
-      initialLocation: home,
-      redirect: (context, state) {
-        final isFirstLaunchAsync = ref.watch(firstLaunchProvider);
-        return isFirstLaunchAsync.maybeWhen(
-          data: (isFirstLaunch) => isFirstLaunch ? onboarding : null,
-          orElse: () => null,
-        );
-      },
+      initialLocation: onboarding, // Temporairement pour voir l'onboarding
+      // redirect: (context, state) {
+      //   final isFirstLaunchAsync = ref.watch(firstLaunchProvider);
+      //   return isFirstLaunchAsync.maybeWhen(
+      //     data: (isFirstLaunch) => isFirstLaunch ? onboarding : null,
+      //     orElse: () => null,
+      //   );
+      // },
       routes: [
         GoRoute(
           path: onboarding,
