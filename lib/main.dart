@@ -61,15 +61,16 @@ class MyApp extends ConsumerWidget {
 
       // Show splash during data loading
       builder: (context, child) {
-        return sampleDataAsync.when(
-          data: (_) => child ?? const SizedBox.shrink(),
-          loading: () => const _SplashScreen(),
-          error: (error, stack) {
-            // En cas d'erreur, afficher quand même l'app
-            debugPrint('Erreur lors du chargement initial: $error');
-            return child ?? const SizedBox.shrink();
-          },
-        );
+        return const _SplashScreen();
+        // return sampleDataAsync.when(
+        //   data: (_) => child ?? const SizedBox.shrink(),
+        //   loading: () => const _SplashScreen(),
+        //   error: (error, stack) {
+        //     // En cas d'erreur, afficher quand même l'app
+        //     debugPrint('Erreur lors du chargement initial: $error');
+        //     return child ?? const SizedBox.shrink();
+        //   },
+        // );
       },
     );
   }
@@ -81,7 +82,7 @@ class _SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -91,7 +92,7 @@ class _SplashScreen extends StatelessWidget {
 
             // Loading indicator
             const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
             ),
           ],
         ),
