@@ -61,16 +61,15 @@ class MyApp extends ConsumerWidget {
 
       // Show splash during data loading
       builder: (context, child) {
-        return const _SplashScreen();
-        // return sampleDataAsync.when(
-        //   data: (_) => child ?? const SizedBox.shrink(),
-        //   loading: () => const _SplashScreen(),
-        //   error: (error, stack) {
-        //     // En cas d'erreur, afficher quand même l'app
-        //     debugPrint('Erreur lors du chargement initial: $error');
-        //     return child ?? const SizedBox.shrink();
-        //   },
-        // );
+        return sampleDataAsync.when(
+          data: (_) => child ?? const SizedBox.shrink(),
+          loading: () => const _SplashScreen(),
+          error: (error, stack) {
+            // En cas d'erreur, afficher quand même l'app
+            debugPrint('Erreur lors du chargement initial: $error');
+            return child ?? const SizedBox.shrink();
+          },
+        );
       },
     );
   }

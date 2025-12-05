@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/text_styles.dart';
@@ -23,36 +24,25 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     OnboardingPage(
       title: 'Bienvenue dans\nAtomic Habits',
       description:
-          'Transformez votre vie avec de petites habitudes qui font une grande différence',
-      icon: Icons.auto_awesome,
+          'Transformez votre vie avec de petites habitudes qui font une grande différence. Commencez dès aujourd\'hui votre parcours vers une meilleure version de vous-même.',
+      imagePath: 'assets/images/working.png',
+      imageType: ImageType.png,
       color: AppColors.primary,
     ),
     OnboardingPage(
       title: '1% mieux\nchaque jour',
       description:
-          'Si vous vous améliorez de 1% chaque jour pendant un an, vous serez 37 fois meilleur à la fin',
-      icon: Icons.trending_up,
+          'Si vous vous améliorez de 1% chaque jour pendant un an, vous serez 37 fois meilleur à la fin. Chaque petit pas compte vers votre réussite.',
+      imagePath: 'assets/images/young-man.png',
+      imageType: ImageType.png,
       color: AppColors.success,
     ),
     OnboardingPage(
-      title: 'Les 4 Lois du\nchangement',
+      title: 'Célébrez vos\nsuccès',
       description:
-          'Rendre évident • Rendre attrayant\nRendre facile • Rendre satisfaisant',
-      icon: Icons.lightbulb,
-      color: AppColors.accent,
-    ),
-    OnboardingPage(
-      title: 'Devenez qui vous\nvoulez être',
-      description:
-          'Chaque habitude est un vote pour le type de personne que vous voulez devenir',
-      icon: Icons.person_pin,
-      color: AppColors.secondary,
-    ),
-    OnboardingPage(
-      title: 'Comprendre\nles concepts',
-      description:
-          'Pas familier avec Atomic Habits ? Consultez le guide intégré pour maîtriser les 4 lois',
-      icon: Icons.school,
+          'Chaque habitude accomplie est une victoire. Prenez le temps de célébrer vos progrès et de reconnaître les changements positifs dans votre vie.',
+      imagePath: 'assets/images/celebrate.svg',
+      imageType: ImageType.svg,
       color: AppColors.accent,
     ),
   ];
@@ -148,38 +138,97 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   Widget _buildPage(OnboardingPage page) {
-    return Padding(
-      padding: const EdgeInsets.all(AppConstants.paddingLarge),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(32),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [page.color, page.color.withValues(alpha: 0.7)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [page.color.withValues(alpha: 0.05), Colors.white],
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppConstants.paddingLarge,
+          vertical: AppConstants.paddingMedium,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Image section
+            Expanded(
+              flex: 3,
+              child: Center(
+                child: Hero(
+                  tag: 'onboarding_image_${_pages.indexOf(page)}',
+                  child: Container(
+                    constraints: const BoxConstraints(
+                      maxWidth: 300,
+                      maxHeight: 300,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: page.color.withValues(alpha: 0.2),
+                          blurRadius: 30,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(24),
+                      child: page.imageType == ImageType.svg
+                          ? SvgPicture.asset(
+                              page.imagePath,
+                              fit: BoxFit.contain,
+                              width: 300,
+                              height: 300,
+                            )
+                          : Image.asset(
+                              page.imagePath,
+                              fit: BoxFit.contain,
+                              width: 300,
+                              height: 300,
+                            ),
+                    ),
+                  ),
+                ),
               ),
-              shape: BoxShape.circle,
             ),
-            child: Icon(page.icon, size: 80, color: Colors.white),
-          ),
-          const SizedBox(height: 48),
-          Text(
-            page.title,
-            style: AppTextStyles.displaySmall.copyWith(color: page.color),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 24),
-          Text(
-            page.description,
-            style: AppTextStyles.bodyLarge.copyWith(
-              color: AppColors.textSecondaryLight,
+
+            const SizedBox(height: 40),
+
+            // Text section
+            Expanded(
+              flex: 2,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    page.title,
+                    style: AppTextStyles.displayMedium.copyWith(
+                      color: page.color,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      page.description,
+                      style: AppTextStyles.bodyLarge.copyWith(
+                        color: AppColors.textSecondaryLight,
+                        height: 1.6,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -198,16 +247,20 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 }
 
+enum ImageType { png, svg }
+
 class OnboardingPage {
   final String title;
   final String description;
-  final IconData icon;
+  final String imagePath;
+  final ImageType imageType;
   final Color color;
 
   OnboardingPage({
     required this.title,
     required this.description,
-    required this.icon,
+    required this.imagePath,
+    required this.imageType,
     required this.color,
   });
 }
