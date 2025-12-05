@@ -39,7 +39,7 @@ class MyApp extends ConsumerWidget {
     final sampleDataAsync = ref.watch(sampleDataLoaderProvider);
 
     return MaterialApp.router(
-      title: 'Atomic Habits',
+      title: 'become.',
       debugShowCheckedModeBanner: false,
 
       // Theme
@@ -61,15 +61,16 @@ class MyApp extends ConsumerWidget {
 
       // Show splash during data loading
       builder: (context, child) {
-        return sampleDataAsync.when(
-          data: (_) => child ?? const SizedBox.shrink(),
-          loading: () => const _SplashScreen(),
-          error: (error, stack) {
-            // En cas d'erreur, afficher quand même l'app
-            debugPrint('Erreur lors du chargement initial: $error');
-            return child ?? const SizedBox.shrink();
-          },
-        );
+        return const _SplashScreen();
+        // return sampleDataAsync.when(
+        //   data: (_) => child ?? const SizedBox.shrink(),
+        //   loading: () => const _SplashScreen(),
+        //   error: (error, stack) {
+        //     // En cas d'erreur, afficher quand même l'app
+        //     debugPrint('Erreur lors du chargement initial: $error');
+        //     return child ?? const SizedBox.shrink();
+        //   },
+        // );
       },
     );
   }
@@ -86,41 +87,8 @@ class _SplashScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo/Icon
-            Container(
-              padding: const EdgeInsets.all(32),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.2),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.auto_awesome_rounded,
-                size: 80,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 32),
-
-            const Text(
-              'Atomic Habits',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                letterSpacing: -0.5,
-              ),
-            ),
-            const SizedBox(height: 8),
-
-            Text(
-              '1% mieux chaque jour',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white.withValues(alpha: 0.8),
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-            const SizedBox(height: 48),
+            // Logo
+            Image.asset('assets/icons/logo.png', width: 200, height: 200),
 
             // Loading indicator
             const CircularProgressIndicator(
