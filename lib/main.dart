@@ -81,7 +81,7 @@ class _SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surfaceDark,
+      backgroundColor: AppColors.backgroundDark,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

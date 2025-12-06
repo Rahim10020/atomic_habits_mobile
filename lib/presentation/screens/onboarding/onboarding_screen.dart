@@ -22,9 +22,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   final List<OnboardingPage> _pages = [
     OnboardingPage(
-      title: 'Bienvenue dans\nbecome.',
+      title: 'Bienvenue dans\nperform.',
       description:
-          'Transformez votre vie avec de petites habitudes qui font une grande différence. Commencez dès aujourd\'hui votre parcours vers une meilleure version de vous-même.',
+          'Adoptez de petites habitudes, créez de grands changements. Dès aujourd’hui, avancez vers la meilleure version de vous-même.',
       imagePath: 'assets/images/working.png',
       imageType: ImageType.png,
       color: AppColors.primary,
@@ -193,30 +193,31 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           // Text section
           Expanded(
             flex: 2,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  page.title,
-                  style: AppTextStyles.displayMedium.copyWith(
-                    color: page.color,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 24),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    page.description,
-                    style: AppTextStyles.bodyLarge.copyWith(
-                      color: AppColors.textSecondaryLight,
-                      height: 1.6,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    page.title,
+                    style: AppTextStyles.displayMedium.copyWith(
+                      color: page.color,
+                      fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                ),
-              ],
+                  const SizedBox(height: 24),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      page.description,
+                      style: AppTextStyles.bodyLarge.copyWith(
+                        color: AppColors.textSecondaryLight,
+                        height: 1.6,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
