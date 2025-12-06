@@ -177,7 +177,6 @@ class SettingsScreen extends ConsumerWidget {
               Navigator.pop(dialogContext);
               if (!parentContext.mounted) return;
 
-              final messenger = ScaffoldMessenger.of(parentContext);
               try {
                 final dataManager = ref.read(dataManagerProvider.notifier);
                 await dataManager.loadSampleData();
@@ -186,15 +185,19 @@ class SettingsScreen extends ConsumerWidget {
                   ..invalidate(dashboardStatsProvider)
                   ..invalidate(completionTrendProvider(7))
                   ..invalidate(completionTrendProvider(30));
-                CustomSnackBar.showSuccess(
-                  parentContext,
-                  'Habitudes d\'exemple chargées !',
-                );
+                if (parentContext.mounted) {
+                  CustomSnackBar.showSuccess(
+                    parentContext,
+                    'Habitudes d\'exemple chargées !',
+                  );
+                }
               } catch (error) {
-                CustomSnackBar.showError(
-                  parentContext,
-                  'Échec du chargement : $error',
-                );
+                if (parentContext.mounted) {
+                  CustomSnackBar.showError(
+                    parentContext,
+                    'Échec du chargement : $error',
+                  );
+                }
               }
             },
             child: const Text('Charger'),
