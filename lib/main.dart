@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:go_router/go_router.dart';
 import 'core/router/app_router.dart';
 import 'core/themes/app_theme.dart';
 import 'core/constants/colors.dart';
@@ -61,6 +62,20 @@ class MyApp extends ConsumerWidget {
 
       // Show splash during data loading
       builder: (context, child) {
+        // Configurer le callback de navigation après que le context soit disponible
+        // Utiliser un callback unique pour éviter les configurations répétées
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final notificationService = NotificationService();
+          notificationService.setNavigationCallback((habitId) {
+            try {
+              final router = GoRouter.of(context);
+              router.push('/habit-detail/$habitId');
+            } catch (e) {
+              debugPrint('Erreur lors de la navigation depuis la notification: $e');
+            }
+          });
+        });
+
         return sampleDataAsync.when(
           data: (_) => child ?? const SizedBox.shrink(),
           loading: () => const _SplashScreen(),

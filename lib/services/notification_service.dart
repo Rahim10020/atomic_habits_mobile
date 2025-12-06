@@ -19,6 +19,12 @@ class NotificationService {
   bool _initialized = false;
   bool _timezoneInitialized = false;
 
+  /// Callback de navigation pour les notifications
+  void Function(int habitId)? _onNavigateToHabit;
+
+  /// Flag pour éviter la configuration répétée du callback
+  bool _navigationCallbackSet = false;
+
   /// Initialise le fuseau horaire avec une méthode de repli
   Future<void> _initializeTimezone() async {
     if (_timezoneInitialized) return;
@@ -150,6 +156,14 @@ class NotificationService {
         );
         // Ne pas lever d'exception, on continuera sans notifications si nécessaire
       }
+    }
+  }
+
+  /// Définit le callback de navigation pour les notifications
+  void setNavigationCallback(void Function(int habitId) callback) {
+    if (!_navigationCallbackSet) {
+      _onNavigateToHabit = callback;
+      _navigationCallbackSet = true;
     }
   }
 
@@ -358,7 +372,22 @@ class NotificationService {
 
   /// Callback quand une notification est tapée
   void _onNotificationTapped(NotificationResponse response) {
-    // TODO: Navigator vers la page de l'habitude
-    // final habitId = response.id;
+    final notificationId = response.id;
+
+    if (notificationId == null) return;
+
+    // Pour les notifications de milestone, l'ID est habitId * 1000
+    // Pour les notifications de rappel, l'ID est directement l'habitId
+    int habitId;
+    if (notificationId >= 1000 && notificationId % 1000 == 0) {
+      // Notification de milestone
+      habitId = notificationId ~/ 1000;
+    } else {
+      // Notification de rappel quotidien
+      habitId = notificationId;
+    }
+
+    // Naviguer vers la page de l'habitude si le callback est défini
+    _onNavigateToHabit?.call(habitId);
   }
 }
